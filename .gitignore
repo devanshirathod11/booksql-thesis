@@ -1,1 +1,32 @@
-RESDSQL/data
+# ===============================
+# Datasets (DO NOT COMMIT)
+# ===============================
+booksql_data/
+DATA/
+Tables/
+submissions/
+RESDSQL/data/
+
+# ===============================
+# Python environments
+# ===============================
+.venv/
+env/
+venv/
+
+# ===============================
+# Python cache
+# ===============================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ===============================
+# Editor / OS junk
+# ===============================
+.DS_Store
+.idea/
+.vscode/
+*.swp
+

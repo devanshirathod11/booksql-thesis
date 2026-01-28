@@ -1,0 +1,8 @@
+business_id,payment_method,credit_card
+2,Visa,Yes
+2,Discover,Yes
+2,American Express,Yes
+2,Diners Club,Yes
+2,MasterCard,Yes
+2,Check,No
+2,Cash,No

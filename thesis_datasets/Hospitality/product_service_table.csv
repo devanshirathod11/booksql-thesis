@@ -1,0 +1,11 @@
+business_id,product_service,product_service_type
+15,Aircraft,Service
+15,Barge,Service
+15,Boat,Service
+15,Railcar,Service
+15,Tanker,Service
+15,Towboat,Service
+15,Forestry Machinery,Service
+15,Heavy construction equipment,Service
+15,Mining machinery,Service
+15,Oil field Machinery,Service

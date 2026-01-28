@@ -1,0 +1,91 @@
+business_id,account_name,account_full_name,account_type
+15,Bookkeeper,Bookkeeper,Expenses
+15,Lawyer,Lawyer,Expenses
+15,Maintenance and Repair,Maintenance and Repair,Expenses
+15,Building Repairs,Building Repairs,Expenses
+15,Computer Repairs,Computer Repairs,Expenses
+15,Advertising,Advertising,Expenses
+15,Bank Charges,Bank Charges,Expenses
+15,Commissions & fees,Commissions & fees,Expenses
+15,Dues & Subscriptions,Dues & Subscriptions,Expenses
+15,Insurance,Insurance,Expenses
+15,Legal & Professional Fees,Legal & Professional Fees,Expenses
+15,Meals and Entertainment,Meals and Entertainment,Expenses
+15,Miscellaneous,Miscellaneous,Other Expense
+15,Office Expenses,Office Expenses,Expenses
+15,Promotional,Promotional,Expenses
+15,Rent or Lease,Rent or Lease,Expenses
+15,Repair & Maintenance (deleted),Repair & Maintenance (deleted),Expenses
+15,Stationery & Printing,Stationery & Printing,Expenses
+15,Supplies,Supplies,Expenses
+15,Taxes & Licenses,Taxes & Licenses,Expenses
+15,Travel,Travel,Expenses
+15,Travel Meals,Travel Meals,Expenses
+15,Utilities,Utilities,Expenses
+15,Interest Earned,Interest Earned,Other Income
+15,Other Portfolio Income,Other Portfolio Income,Other Income
+15,Penalties & Settlements,Penalties & Settlements,Other Expense
+15,Disposal Fees,Disposal Fees,Expenses
+15,Equipment Rental,Equipment Rental,Expenses
+15,Uncategorized Income,Uncategorized Income,Income
+15,Uncategorized Expense,Uncategorized Expense,Expenses
+15,Uncategorized Asset,Uncategorized Asset,Other Current Assets
+15,Accounts Payable (A/P),Accounts Payable (A/P),Accounts payable (A/P)
+15,Towboat and tugboat rental or leasing,Towboat and tugboat rental or leasing,Income
+15,Checking,Checking,Bank
+15,Savings,Savings,Bank
+15,Truck,Truck,Fixed Assets
+15,Original Cost,Original Cost,Fixed Assets
+15,Depreciation,Depreciation,Fixed Assets
+15,Depreciation,Depreciation,Other Expense
+15,Mastercard,Mastercard,Credit Card
+15,Visa,Visa,Credit Card
+15,Loan Payable,Loan Payable,Other Current Liabilities
+15,Notes Payable,Notes Payable,Long Term Liabilities
+15,Tanker rental or leasing,Tanker rental or leasing,Income
+15,Job Materials,Job Materials,Income
+15,Decks and Patios,Decks and Patios,Income
+15,Barge rental or leasing,Barge rental or leasing,Income
+15,Heavy construction equipment rental,Heavy construction equipment rental,Income
+15,Oil field machinery and equipment rental or leasing,Oil field machinery and equipment rental or leasing,Income
+15,Labor,Labor,Income
+15,Installation,Installation,Income
+15,Maintenance and Repair,Maintenance and Repair,Income
+15,Forestry and logging machinery and equipment rental or leasing,Forestry and logging machinery and equipment rental or leasing,Income
+15,Automobile,Automobile,Expenses
+15,Fuel,Fuel,Expenses
+15,Workers Compensation,Workers Compensation,Expenses
+15,Job Expenses,Job Expenses,Expenses
+15,Cost of Labor,Cost of Labor,Expenses
+15,Installation,Installation,Expenses
+15,Maintenance and Repairs,Maintenance and Repairs,Expenses
+15,Equipment Repairs,Equipment Repairs,Expenses
+15,Gas and Electric,Gas and Electric,Expenses
+15,Telephone,Telephone,Expenses
+15,Purchases,Purchases,Expenses
+15,Mining machinery and equipment rental or leasing,Mining machinery and equipment rental or leasing,Income
+15,Aircraft rental or leasing,Aircraft rental or leasing,Income
+15,Railcar rental or leasing,Railcar rental or leasing,Income
+15,Design income,Design income,Income
+15,Other Income,Other Income,Income
+15,Accounts Receivable (A/R),Accounts Receivable (A/R),Accounts receivable (A/R)
+15,Billable Expense Income,Billable Expense Income,Income
+15,Discounts given,Discounts given,Income
+15,Unapplied Cash Payment Income,Unapplied Cash Payment Income,Income
+15,Unapplied Cash Bill Payment Expense,Unapplied Cash Bill Payment Expense,Expenses
+15,Arizona Dept. of Revenue Payable,Arizona Dept. of Revenue Payable,Other Current Liabilities
+15,Board of Equalization Payable,Board of Equalization Payable,Other Current Liabilities
+15,Services,Services,Income
+15,Retained Earnings,Retained Earnings,Equity
+15,Prepaid Expenses,Prepaid Expenses,Other Current Assets
+15,Undeposited Funds,Undeposited Funds,Other Current Assets
+15,Equipment Rental,Equipment Rental,Expenses
+15,Fees Billed,Fees Billed,Income
+15,Refunds-Allowances,Refunds-Allowances,Income
+15,Job Materials,Job Materials,Expenses
+15,Decks and Patios,Decks and Patios,Expenses
+15,"Boat, ship and steamship rental or leasing","Boat, ship and steamship rental or leasing",Income
+15,Heavy construction equipment rental,Heavy construction equipment rental,Income
+15,Oil field machinery and equipment rental or leasing,Oil field machinery and equipment rental or leasing,Income
+15,Permits,Permits,Expenses
+15,Accounting,Accounting,Expenses

@@ -1,0 +1,8 @@
+business_id,payment_method,credit_card
+15,Cash,No
+15,Visa,Yes
+15,MasterCard,Yes
+15,Diners Club,Yes
+15,American Express,Yes
+15,Discover,Yes
+15,Check,No

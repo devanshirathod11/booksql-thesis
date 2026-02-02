@@ -1,0 +1,261 @@
+Dataset_Type,Industry,Question,Generated_Output
+Thesis_Stratified,Hospitality,What is the total revenue from Room Rent in Q1 2023?How many unique guests stayed in the hotel in March?List the top 5 services availed by guests in February 2022.Calculate the average length of stay for guests in January 2024.What is the total expenditure on Food & Beverages in 2023 and 2024?,"Sure, let's break down each question into steps and write the corresponding SQL queries.
+
+### Step-by-Step Logic:
+
+#### 1. What is the total revenue from Room Rent in Q1 2023?
+**Steps:**
+1. Identify the relevant transactions where `transaction_type` is related to Room Rent.
+2. Filter the transactions for Q1 2023.
+3. Sum up the `amount` for these transactions.
+
+**SQL Query:**
+```sql
+SELECT 
+    SUM(amount) AS total_revenue
+FROM 
+    Master_txn_table
+WHERE 
+    transaction_type LIKE '%Room Rent%' 
+    AND transaction_date BETWEEN '2023-01-01' AND '2023-03-31';
+```
+
+#### 2. How many unique guests stayed in the hotel in March?
+**Steps:**
+1. Identify the relevant transactions for March.
+2. Extract the `customer_name` column.
+3. Count the number of unique `customer_name`.
+
+**SQL Query:**
+```sql
+SELECT 
+    COUNT(DISTINCT customer_name) AS unique_guests
+FROM 
+    Master_txn_table
+WHERE 
+    transaction_date LIKE '%March%';
+```
+
+#### 3. List the top 5 services availed by guests in February 2022.
+**Steps:**
+1. Identify the relevant transactions for February 2022.
+2. Extract the `product_service` column.
+3. Group by `product_service` and count the occurrences.
+4. Order the results by count in descending order and limit to the top 5.
+
+**SQL Query:**
+```sql
+SELECT 
+    product_service, 
+    COUNT(*) AS service_count
+FROM 
+    Master_txn_table
+WHERE 
+    transaction_date LIKE '%February% 2022'
+GROUP BY 
+    product_service
+ORDER BY 
+    service_count DESC
+LIMIT 5;
+```
+
+#### 4. Calculate the average length of stay for guests in January 2024.
+**Steps:**
+1. Identify the relevant transactions for January 2024.
+2. Extract the `transaction_date` and `due_date`.
+3. Calculate the difference between `due_date` and `transaction_date`.
+4. Average the duration.
+
+**SQL Query:**
+```sql
+SELECT 
+    AVG(TIME_TO_SEC(TIMEDIFF(due_date, transaction_date)) / 86400) AS avg_length_of_stay
+FROM 
+    Master_txn_table
+WHERE 
+    transaction_date LIKE '%January% 2024';
+```
+
+#### 5. What is the total expenditure on Food & Beverages in 2023 and 2024?
+**Steps:**
+1. Identify the relevant transactions for 2023 and 2024.
+2. Extract the `transaction_type` that includes ""Food & Beverages"".
+3. Sum up the `amount` for these transactions.
+
+**SQL Query:**
+```sql
+SELECT 
+    SUM(amount) AS total_expenditure
+FROM 
+    Master_txn_table
+WHERE 
+    transaction_type LIKE '%Food & Beverages%'
+    AND transaction_date BETWEEN '2023-01-01' AND '2024-12-31';
+```
+
+These queries should provide the required information based on the given schema and data."
+Thesis_Stratified,Service,List all clients who paid for Design Consulting services.What is the total revenue generated from IT Support services in 2023?Calculate the average project duration for completed projects in 2022.How many service tickets were resolved in Q4 2023?What is the total cost incurred for outsourced services in 2023?,"Sure, let's break down each question into steps and write the corresponding SQL queries.
+
+#### 1. List all clients who paid for Design Consulting services.
+
+**Step-by-Step Logic:**
+1. Identify the `product_service` that corresponds to ""Design Consulting"".
+2. Filter transactions where the `transaction_type` indicates a payment (`a/r_paid` or `a/p_paid`).
+3. Ensure the `customer_name` is listed as the client.
+
+**SQL Query:**
+```sql
+SELECT DISTINCT c.customer_name
+FROM Master_txn_table m
+JOIN customer_table c ON m.customer_name = c.customer_name
+WHERE m.product_service = 'Design Consulting'
+  AND m.transaction_type IN ('a/r_paid', 'a/p_paid');
+```
+
+#### 2. What is the total revenue generated from IT Support services in 2023?
+
+**Step-by-Step Logic:**
+1. Identify the `product_service` that corresponds to ""IT Support"".
+2. Filter transactions where the `transaction_type` indicates a sale (`sale`).
+3. Sum the `amount` for these transactions.
+4. Ensure the year of the `transaction_date` is 2023.
+
+**SQL Query:**
+```sql
+SELECT SUM(amount) AS total_revenue
+FROM Master_txn_table
+WHERE product_service = 'IT Support'
+  AND transaction_type = 'sale'
+  AND EXTRACT(YEAR FROM transaction_date) = 2023;
+```
+
+#### 3. Calculate the average project duration for completed projects in 2022.
+
+**Step-by-Step Logic:**
+1. Identify completed projects by checking if `po_status` is 'Completed'.
+2. Ensure the year of the `transaction_date` is 2022.
+3. Calculate the difference between `due_date` and `transaction_date`.
+
+**SQL Query:**
+```sql
+WITH completed_projects AS (
+    SELECT transaction_id, transaction_date, due_date
+    FROM Master_txn_table
+    WHERE po_status = 'Completed'
+      AND EXTRACT(YEAR FROM transaction_date) = 2022
+)
+SELECT AVG(julianday(due_date) - julianday(transaction_date)) AS average_duration
+FROM completed_projects;
+```
+
+#### 4. How many service tickets were resolved in Q4 2023?
+
+**Step-by-Step Logic:**
+1. Identify the quarter (Q4) in the `transaction_date`.
+2. Ensure the year of the `transaction_date` is 2023.
+3. Count the number of unique `transaction_id` entries.
+
+**SQL Query:**
+```sql
+SELECT COUNT(DISTINCT transaction_id) AS ticket_count
+FROM Master_txn_table
+WHERE EXTRACT(YEAR FROM transaction_date) = 2023
+  AND EXTRACT(MONTH FROM transaction_date) BETWEEN 10 AND 12;
+```
+
+#### 5. What is the total cost incurred for outsourced services in 2023?
+
+**Step-by-Step Logic:**
+1. Identify the `product_service` that corresponds to ""outsourced services"".
+2. Filter transactions where the `transaction_type` indicates a purchase (`purchase`).
+3. Sum the `amount` for these transactions.
+4. Ensure the year of the `transaction_date` is 2023.
+
+**SQL Query:**
+```sql
+SELECT SUM(amount) AS total_cost
+FROM Master_txn_table
+WHERE product_service LIKE '%outsourced%'
+  AND transaction_type = 'purchase'
+  AND EXTRACT(YEAR FROM transaction_date) = 2023;
+```
+
+These SQL queries should provide the necessary information based on the given schema and user questions."
+Thesis_Stratified,Construction,Calculate the total cost of Job Materials for all projects.List the top 3 suppliers by total purchase amount in 2023.What is the average labor cost per project in 2022?How many active projects were there in Q2 2023?What is the total revenue from completed projects in 2023?,"Sure, let's break down each question and provide the corresponding SQL queries step-by-step.
+
+#### 1. Calculate the total cost of Job Materials for all projects.
+
+**Step-by-Step Logic:**
+- Identify the relevant columns from `Master_txn_table` that pertain to job materials.
+- Sum up the `purchase` column to get the total cost of job materials.
+
+**SQL Query:**
+```sql
+SELECT SUM(purchase) AS total_job_material_cost
+FROM Master_txn_table
+WHERE transaction_type = 'Job Materials';
+```
+
+#### 2. List the top 3 suppliers by total purchase amount in 2023.
+
+**Step-by-Step Logic:**
+- Filter transactions where `transaction_date` falls within 2023.
+- Group by `vendor_name` to calculate the total purchase amount for each supplier.
+- Order the results by the total purchase amount in descending order and limit to the top 3.
+
+**SQL Query:**
+```sql
+SELECT vendor_name, SUM(purchase) AS total_purchase_amount
+FROM Master_txn_table
+WHERE transaction_date >= '2023-01-01' AND transaction_date < '2024-01-01'
+GROUP BY vendor_name
+ORDER BY total_purchase_amount DESC
+LIMIT 3;
+```
+
+#### 3. What is the average labor cost per project in 2022?
+
+**Step-by-Step Logic:**
+- Identify the relevant columns from `Master_txn_table` that pertain to labor costs.
+- Filter transactions where `transaction_date` falls within 2022.
+- Group by `customer_name` to calculate the average labor cost per project.
+
+**SQL Query:**
+```sql
+SELECT AVG(billing_rate * quantity) AS average_labor_cost_per_project
+FROM Master_txn_table
+JOIN employee_table ON Master_txn_table.employee_id = employee_table.employee_id
+WHERE transaction_date >= '2022-01-01' AND transaction_date < '2023-01-01'
+GROUP BY customer_name;
+```
+
+#### 4. How many active projects were there in Q2 2023?
+
+**Step-by-Step Logic:**
+- Identify the relevant columns from `Master_txn_table` that pertain to project status.
+- Filter transactions where `transaction_date` falls within Q2 2023.
+- Count the number of unique `customer_name` entries to determine the number of active projects.
+
+**SQL Query:**
+```sql
+SELECT COUNT(DISTINCT customer_name) AS active_projects_in_Q2_2023
+FROM Master_txn_table
+WHERE transaction_date >= '2023-04-01' AND transaction_date < '2023-07-01';
+```
+
+#### 5. What is the total revenue from completed projects in 2023?
+
+**Step-by-Step Logic:**
+- Identify the relevant columns from `Master_txn_table` that pertain to revenue.
+- Filter transactions where `transaction_date` falls within 2023.
+- Sum up the `sale` column to get the total revenue from completed projects.
+
+**SQL Query:**
+```sql
+SELECT SUM(sale) AS total_revenue_from_completed_projects
+FROM Master_txn_table
+WHERE transaction_date >= '2023-01-01' AND transaction_date < '2024-01-01'
+AND po_status = 'Completed';
+```
+
+These SQL queries should help you answer the user's questions effectively. Each query is designed to extract the specific information required based on the provided schema and logic."

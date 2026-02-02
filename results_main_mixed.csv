@@ -1,0 +1,432 @@
+Dataset_Type,Question,Generated_Output
+Main_Mixed,What is the total revenue for the company?,"To determine the total revenue for a specific company, we need to sum up all the transactions that have a `transaction_type` of ""sale"" and filter by the `business_id`. This will ensure that we only consider transactions related to the specified company and accurately calculate the total revenue.
+
+Here's the step-by-step logic:
+
+1. **Identify the relevant table**: The `Master_txn_table` contains information about all transactions, including their type (`transaction_type`). We need to focus on rows where `transaction_type` is ""sale"".
+
+2. **Filter by business_id**: To ensure that we only consider transactions from the specified company, we need to use the `business_id` column in the `Master_txn_table`.
+
+3. **Sum the amounts**: We need to sum up the `amount` column for all sales transactions from the specified company.
+
+4. **Ensure no data leaks**: Since the question asks for the total revenue for a specific company, we must ensure that the `business_id` is correctly used in the query to avoid data leaks. This means that the `business_id` should be passed as a parameter or hard-coded in the query if it's known.
+
+Here's the SQL query based on the above logic:
+
+```sql
+SELECT SUM(amount) AS total_revenue
+FROM Master_txn_table
+WHERE business_id = <specific_business_id>
+  AND transaction_type = 'sale';
+```
+
+Replace `<specific_business_id>` with the actual `business_id` of the company you want to calculate the total revenue for.
+
+This query ensures that only transactions from the specified company are considered, and the total revenue is calculated by summing up the `amount` for all ""sale"" transactions."
+Main_Mixed,Calculate the total cost of Job Materials.,"To calculate the total cost of Job Materials, we need to identify which transactions in the `Master_txn_table` correspond to Job Materials and then sum up their amounts. Since the schema does not explicitly define what constitutes ""Job Materials,"" we'll assume that it's represented by specific values in the `product_service` column or other related fields.
+
+Here’s the step-by-step logic:
+
+1. **Identify the relevant transactions**: We need to filter the `Master_txn_table` to include only those transactions where the `product_service` is related to Job Materials. This could be done using a WHERE clause with an appropriate condition on the `product_service` column.
+
+2. **Sum the amounts**: Once we have identified the relevant transactions, we can sum up the `amount` column to get the total cost of Job Materials.
+
+3. **Ensure data security**: To ensure that no data from other companies is leaked, we must use the `business_id` to filter the data appropriately. This means that all queries should be executed within the context of a specific `business_id`.
+
+Here is the SQL query to achieve this:
+
+```sql
+-- Step 1: Define the business_id for which we want to calculate the total cost of Job Materials
+DECLARE @business_id INT = 1; -- Replace with the actual business_id you want to query
+
+-- Step 2: Calculate the total cost of Job Materials
+SELECT 
+    SUM(amount) AS total_cost_of_job_materials
+FROM 
+    Master_txn_table
+WHERE 
+    business_id = @business_id
+    AND product_service = 'Job Materials'; -- Adjust the product_service value as needed
+```
+
+### Explanation:
+1. **DECLARE @business_id INT = 1;** - This line declares a variable `@business_id` and sets its initial value to 1. You should replace `1` with the actual `business_id` you are interested in.
+
+2. **SELECT SUM(amount) AS total_cost_of_job_materials FROM Master_txn_table WHERE business_id = @business_id AND product_service = 'Job Materials';** - This part of the query selects the sum of the `amount` column from the `Master_txn_table`. It filters the results to include only those rows where the `business_id` matches the one specified in the variable and the `product_service` is 'Job Materials'. The result is aliased as `total_cost_of_job_materials`.
+
+This query ensures that the calculation is performed only for the specified `business_id` and that the `product_service` is correctly identified as 'Job Materials'. Adjust the `product_service` value if 'Job Materials' is represented differently in your dataset."
+Main_Mixed,List the top 5 customers by balance.,"To list the top 5 customers by balance, we need to join the `customer_table` with the `Master_txn_table` and aggregate the balances from the `Master_txn_table`. We will also need to ensure that we are only considering transactions related to the specific business_id of the customer. Here's the step-by-step logic:
+
+1. **Join the `customer_table` with the `Master_txn_table`**: We need to join these tables on the `business_id` to filter transactions specific to each customer.
+2. **Aggregate the balance**: We'll sum up the `amount` column in the `Master_txn_table` to get the total balance for each customer.
+3. **Filter out irrelevant transactions**: We should exclude any transactions that don't contribute to the balance calculation (e.g., `a/r_paid`, `a/p_paid`, etc.).
+4. **Order the results by balance**: We'll order the results in descending order based on the balance.
+5. **Limit the results**: Finally, we'll limit the output to the top 5 customers.
+
+Here is the SQL query that implements this logic:
+
+```sql
+SELECT 
+    ct.customer_name,
+    SUM(mt.amount) AS total_balance
+FROM 
+    customer_table ct
+JOIN 
+    Master_txn_table mt ON ct.business_id = mt.business_id
+WHERE 
+    mt.transaction_type IN ('sale', 'purchase') -- Assuming these are the types that affect the balance
+GROUP BY 
+    ct.customer_name
+ORDER BY 
+    total_balance DESC
+LIMIT 5;
+```
+
+### Explanation:
+1. **Joining Tables**: We join the `customer_table` (`ct`) with the `Master_txn_table` (`mt`) using the `business_id`.
+2. **Filtering Transactions**: We filter the transactions to include only those that are either sales or purchases (`transaction_type` is either 'sale' or 'purchase`). This ensures that we're only considering transactions that directly impact the balance.
+3. **Aggregating Balance**: We use the `SUM` function to calculate the total balance for each customer by summing up the `amount` column.
+4. **Grouping Results**: We group the results by `customer_name` so that we can aggregate the balances per customer.
+5. **Ordering and Limiting**: We order the results by the total balance in descending order and limit the output to the top 5 customers.
+
+This query ensures that we are only considering transactions relevant to the balance and that the results are specific to the business_id of the customer, thus avoiding data leaks between different tenants."
+Main_Mixed,which product did most of our income come from Last month?,"To determine which product brought in the most income last month, we need to follow these steps:
+
+1. **Identify the relevant tables and columns**: We need to look at the `Master_txn_table` to get the transaction details, including the `product_service`, `transaction_type`, and `amount`. We also need to filter transactions that occurred last month.
+
+2. **Filter transactions by last month**: We will use the `transaction_date` column to filter transactions that happened within the last month.
+
+3. **Filter transactions by income type**: Since we're interested in income, we'll focus on transactions where the `transaction_type` is related to income (e.g., `sale`, `billable`, etc.).
+
+4. **Summarize the income by product**: We'll group the transactions by `product_service` and sum up the `amount` for each product.
+
+5. **Sort and select the top product**: Finally, we'll sort the results by the total income in descending order and select the product with the highest income.
+
+Here's the SQL query to achieve this:
+
+```sql
+-- Step 1: Identify the last month's transactions
+WITH last_month_transactions AS (
+    SELECT *
+    FROM Master_txn_table
+    WHERE transaction_date >= DATEADD(month, DATEDIFF(month, 0, GETDATE()) - 1, 0)
+      AND transaction_date < DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0)
+      AND transaction_type IN ('sale', 'billable', 'invoiced')
+),
+-- Step 2: Summarize the income by product
+income_by_product AS (
+    SELECT 
+        product_service,
+        SUM(amount) AS total_income
+    FROM last_month_transactions
+    GROUP BY product_service
+)
+-- Step 3: Select the product with the highest income
+SELECT 
+    product_service,
+    total_income
+FROM income_by_product
+ORDER BY total_income DESC
+LIMIT 1;
+```
+
+### Explanation:
+1. **last_month_transactions CTE**:
+   - This Common Table Expression (CTE) filters the `Master_txn_table` to include only transactions that occurred within the last month and have a transaction type that indicates income (`sale`, `billable`, `invoiced`).
+
+2. **income_by_product CTE**:
+   - This CTE groups the filtered transactions by `product_service` and calculates the total income for each product by summing up the `amount`.
+
+3. **Final SELECT statement**:
+   - The final query selects the product service and its corresponding total income from the `income_by_product` CTE.
+   - It orders the results by `total_income` in descending order to find the product with the highest income.
+   - The `LIMIT 1` clause ensures that only the top product (the one with the highest income) is returned.
+
+This approach ensures that we are only considering transactions that fall within the last month and are related to income, thus providing an accurate answer to the question."
+Main_Mixed,What is the average payment amount received?,"To determine the average payment amount received, we need to filter out the relevant transactions from the `Master_txn_table` where the `transaction_type` indicates that it's a payment and then calculate the average of the `amount` column.
+
+Here’s the step-by-step logic:
+
+1. **Identify Relevant Transactions**: We need to select transactions where the `transaction_type` is related to payments. Typically, this would be either `a/r_paid` or `a/p_paid`, depending on whether the payment is from a customer (`a/r_paid`) or to a vendor (`a/p_paid`).
+
+2. **Filter by Business ID**: Ensure that the results are specific to the correct business by filtering based on the `business_id`.
+
+3. **Calculate Average Amount**: Compute the average of the `amount` column for these filtered transactions.
+
+Here is the SQL query to achieve this:
+
+```sql
+-- Step 1: Select relevant transactions
+SELECT 
+    business_id,
+    transaction_id,
+    transaction_date,
+    transaction_type,
+    amount,
+    created_date,
+    created_user,
+    account,
+    a/r_paid AS a_r_paid,
+    a/p_paid AS a_p_paid,
+    due_date,
+    open_balance,
+    po_status,
+    estimate_status,
+    customer_name,
+    vendor_name,
+    product_service,
+    quantity,
+    rate,
+    credit,
+    debit,
+    sale,
+    purchase,
+    billable,
+    invoiced,
+    cleared,
+    payment_method,
+    misc_(business_specific_fields)
+FROM 
+    Master_txn_table
+WHERE 
+    business_id = <specific_business_id> -- Replace with the actual business ID
+    AND (transaction_type = 'a/r_paid' OR transaction_type = 'a/p_paid');
+
+-- Step 2: Calculate the average amount
+WITH PaymentTransactions AS (
+    SELECT 
+        business_id,
+        transaction_id,
+        transaction_date,
+        transaction_type,
+        amount,
+        created_date,
+        created_user,
+        account,
+        a/r_paid AS a_r_paid,
+        a/p_paid AS a_p_paid,
+        due_date,
+        open_balance,
+        po_status,
+        estimate_status,
+        customer_name,
+        vendor_name,
+        product_service,
+        quantity,
+        rate,
+        credit,
+        debit,
+        sale,
+        purchase,
+        billable,
+        invoiced,
+        cleared,
+        payment_method,
+        misc_(business_specific_fields)
+    FROM 
+        Master_txn_table
+    WHERE 
+        business_id = <specific_business_id> -- Replace with the actual business ID
+        AND (transaction_type = 'a/r_paid' OR transaction_type = 'a/p_paid')
+)
+SELECT 
+    AVG(amount) AS average_payment_amount
+FROM 
+    PaymentTransactions;
+```
+
+### Explanation:
+1. **WITH Clause**: The `WITH` clause is used to create a temporary result set called `PaymentTransactions`. This allows us to filter and aggregate the data in a more readable way.
+   
+2. **Filtering**: The `WHERE` clause filters the transactions to include only those where the `transaction_type` is either `a/r_paid` (payment from a customer) or `a/p_paid` (payment to a vendor).
+
+3. **Aggregation**: The `AVG(amount)` function calculates the average of the `amount` column for the filtered transactions.
+
+4. **Result**: The final query returns the average payment amount received for the specified business.
+
+Replace `<specific_business_id>` with the actual business ID you want to analyze."
+Main_Mixed,Show me the total expenses for each department.,"To show the total expenses for each department, we need to first identify which table contains the relevant information about departments and then join it with the `Master_txn_table` to calculate the total expenses. 
+
+### Step 1: Identify the Table Containing Department Information
+The `product_service_table` seems to contain information related to products/services, which could be indirectly related to departments if we assume that different departments handle different types of products/services. However, without more context or specific fields indicating departments, we'll have to make an assumption based on the available data.
+
+### Step 2: Join Tables to Get Total Expenses by Department
+We will join the `Master_txn_table` with the `product_service_table` to get the total expenses for each department. We'll use the `product_service` field from the `product_service_table` as our department identifier.
+
+### Step 3: Calculate Total Expenses
+We'll sum up the `amount` column in the `Master_txn_table` where the `transaction_type` is related to expenses (e.g., `purchase`, `billable`, etc.).
+
+### Step 4: Group Results by Department
+Finally, we'll group the results by the `product_service` field to get the total expenses for each department.
+
+### SQL Query:
+```sql
+SELECT 
+    ps.product_service AS department,
+    SUM(mt.amount) AS total_expenses
+FROM 
+    Master_txn_table mt
+JOIN 
+    product_service_table ps ON mt.business_id = ps.business_id AND mt.product_service = ps.product_service
+GROUP BY 
+    ps.product_service;
+```
+
+### Explanation:
+1. **Join Condition**: We join the `Master_txn_table` (`mt`) with the `product_service_table` (`ps`) on both `business_id` and `product_service`. This ensures that we only consider transactions that belong to the same business and have a corresponding product/service entry.
+2. **Summing Amounts**: We sum the `amount` column from the `Master_txn_table` to get the total expenses for each department.
+3. **Grouping by Department**: We group the results by the `product_service` field to ensure that the total expenses are calculated separately for each department.
+
+This query assumes that the `product_service` field in the `product_service_table` represents the department. If this is not the case, you may need to adjust the query to use another field that accurately represents the department."
+Main_Mixed,How many vendors do we have in total?,"To determine the total number of unique vendors across all companies, we need to query the `vendor_table` and ensure that we count only distinct `vendor_name` entries. Since the question asks for the total number of vendors, we will use the COUNT function with DISTINCT to get the unique count.
+
+Here is the step-by-step logic:
+
+1. **Identify the relevant table**: The `vendor_table` contains the information about vendors.
+2. **Filter by business_id**: Ensure that the results are specific to each company by filtering on the `business_id`.
+3. **Count unique vendor names**: Use the COUNT function with DISTINCT to count the unique vendor names.
+
+The SQL query would look like this:
+
+```sql
+SELECT 
+    COUNT(DISTINCT vendor_name) AS total_vendors
+FROM 
+    vendor_table;
+```
+
+This query will return the total number of unique vendors across all companies.
+
+### Explanation:
+- `COUNT(DISTINCT vendor_name)`: This part of the query ensures that we count only unique vendor names, avoiding any duplicates.
+- `AS total_vendors`: This gives the result a meaningful name so it's clear what the output represents.
+
+Since the question does not specify a particular company or multiple companies, the above query will give the total number of unique vendors from all companies combined. If you need to filter by a specific company, you can add a WHERE clause with the appropriate `business_id`.
+
+For example, if you want to count vendors for a specific company with `business_id = 1`, the query would be:
+
+```sql
+SELECT 
+    COUNT(DISTINCT vendor_name) AS total_vendors
+FROM 
+    vendor_table
+WHERE 
+    business_id = 1;
+```
+
+This will provide the count of unique vendors for the specified company."
+Main_Mixed,What is the total number of employees?,"To determine the total number of employees across all companies in the database, we need to query the `employee_table` and ensure that we only count unique `employee_id`s. This will help us avoid counting the same employee multiple times if they appear in different records or have different `business_id`s.
+
+Here's the step-by-step logic:
+
+1. **Identify the relevant table**: The `employee_table` contains information about employees, including their `business_id`, `employee_name`, `employee_id`, `hire_date`, `billing_rate`, and whether they are `deleted`.
+
+2. **Filter by business_id**: Since the question asks for the total number of employees across all companies, we need to consider all entries in the `employee_table`. However, we should ensure that we do not count the same employee more than once by using a distinct count.
+
+3. **Count the unique employee_ids**: We can use the `COUNT(DISTINCT employee_id)` function to get the total number of unique employees.
+
+4. **Construct the SQL query**: We will write an SQL query that selects the `COUNT(DISTINCT employee_id)` from the `employee_table`.
+
+Here is the SQL query:
+
+```sql
+SELECT COUNT(DISTINCT employee_id) AS total_employees
+FROM employee_table;
+```
+
+This query will return the total number of unique employees across all companies in the database.
+
+### Explanation:
+- `COUNT(DISTINCT employee_id)`: This counts the number of unique `employee_id`s in the `employee_table`.
+- `AS total_employees`: This renames the result column to `total_employees` for clarity.
+
+By using `DISTINCT`, we ensure that each employee is counted only once, regardless of how many times they might appear in the `employee_table` with different `business_id`s. This approach avoids any potential data leaks or double-counting issues.
+
+Thus, the final SQL query to find the total number of employees is:
+
+```sql
+SELECT COUNT(DISTINCT employee_id) AS total_employees
+FROM employee_table;
+```"
+Main_Mixed,List the top 3 payment methods used by our customers.,"To list the top 3 payment methods used by our customers, we need to follow these steps:
+
+1. **Identify the relevant tables and columns**: We need to join the `customer_table` with the `payment_method` table to get the payment methods used by each customer.
+2. **Filter out the necessary information**: We will focus on the `payment_method` column from the `payment_method` table.
+3. **Group and aggregate the data**: We will group the results by `payment_method` and count the occurrences of each payment method.
+4. **Sort the results**: We will sort the results in descending order based on the count of each payment method.
+5. **Limit the results**: We will limit the output to the top 3 payment methods.
+
+Here is the SQL query that accomplishes this:
+
+```sql
+-- Step 1: Join the customer_table with the payment_method table
+SELECT 
+    cm.payment_method,
+    COUNT(*) AS method_count
+FROM 
+    customer_table ct
+JOIN 
+    payment_method pm ON ct.business_id = pm.business_id AND ct.customer_name = pm.customer_name
+GROUP BY 
+    cm.payment_method
+ORDER BY 
+    method_count DESC
+LIMIT 3;
+```
+
+### Explanation:
+1. **Joining Tables**:
+   - We join the `customer_table` (`ct`) with the `payment_method` table (`pm`) using the `business_id` and `customer_name` fields to ensure that only the payment methods associated with specific customers are considered.
+
+2. **Selecting Columns**:
+   - We select the `payment_method` column from the `payment_method` table and the count of each payment method (`method_count`).
+
+3. **Grouping**:
+   - We group the results by `payment_method` to aggregate the counts of each payment method.
+
+4. **Sorting**:
+   - We sort the results in descending order by `method_count` to get the most frequently used payment methods first.
+
+5. **Limiting Results**:
+   - We limit the output to the top 3 payment methods using the `LIMIT 3` clause.
+
+This query ensures that we only consider the payment methods used by customers and not any other irrelevant data. It also avoids data leaks by ensuring that the `business_id` is correctly handled during the joins and grouping operations."
+Main_Mixed,What is the total sales amount for each product/service?,"To determine the total sales amount for each product/service, we need to follow these steps:
+
+1. **Identify the relevant tables and columns**: We need to join the `Master_txn_table` with the `product_service_table` to get the product/service information.
+2. **Filter out the sales transactions**: We need to filter the transactions where the `transaction_type` is related to sales.
+3. **Sum the amounts**: We will sum up the `amount` column for each product/service combination.
+
+Here's the step-by-step SQL query to achieve this:
+
+```sql
+-- Step 1: Join the Master_txn_table with the product_service_table
+SELECT 
+    m.business_id,
+    ps.product_service,
+    SUM(m.amount) AS total_sales_amount
+FROM 
+    Master_txn_table m
+JOIN 
+    product_service_table ps ON m.business_id = ps.business_id AND m.product_service = ps.product_service
+WHERE 
+    m.transaction_type = 'Sales'
+GROUP BY 
+    m.business_id, ps.product_service;
+```
+
+### Explanation of the Query:
+
+1. **Joining Tables**:
+   - We join the `Master_txn_table` (`m`) with the `product_service_table` (`ps`) on the `business_id` and `product_service` columns. This ensures that we only consider transactions that have corresponding product/service records in the `product_service_table`.
+
+2. **Filtering Sales Transactions**:
+   - We filter the transactions by setting the `transaction_type` to 'Sales'. This ensures that only sales-related transactions are included in the calculation.
+
+3. **Summing Amounts**:
+   - We use the `SUM` function to calculate the total sales amount for each combination of `business_id` and `product_service`.
+
+4. **Grouping Results**:
+   - We group the results by `business_id` and `product_service` to ensure that the total sales amount is calculated separately for each unique combination of business and product/service.
+
+This query will provide the total sales amount for each product/service across all companies in the database, ensuring that the `business_id` is handled correctly to avoid data leaks."

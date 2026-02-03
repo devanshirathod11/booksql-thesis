@@ -1,0 +1,64 @@
+Industry,Question,Mixed_DSF,Mixed_SDE,Mixed_SLED,Mixed_TGP,Mixed_ASV,Strat_DSF,Strat_SDE,Strat_SLED,Strat_TGP,Strat_ASV
+Construction,What acount had our biggest expense This fiscal year to date?,0.0,0.46349310874938965,0.40987654320987654,1.0,1.0,0.0,1.0,0.30426356589147285,1.0,1.0
+Construction,What was the mean bill Amanda Fry received from Robin Wright?,0.0,0.5412834882736206,0.36900369003690037,1.0,1.0,0.0,0.6120097041130066,0.3620689655172413,1.0,1.0
+Construction,What acount had our biggest expense YTD?,0.0,0.46349310874938965,0.48344370860927155,1.0,1.0,0.0,0.46349310874938965,0.3852941176470588,1.0,1.0
+Construction,What was the min invoice value for Retailing Wardrobe in Last 30 days?,0.0,0.3502420485019684,0.32799999999999996,1.0,1.0,0.0,0.36173883080482483,0.44999999999999996,1.0,1.0
+Construction,What was the lowest invoice value for Maintenance and Repair in Last 7 days?,0.0,0.3515200614929199,0.3131868131868132,1.0,1.0,0.0,0.38020583987236023,0.29695431472081213,1.0,1.0
+Construction,What was the lowest invoice value for Manufacturing industrial organic gases in yesterday?,0.0,0.3502420485019684,0.3432343234323433,1.0,1.0,0.0,0.36173883080482483,0.5570175438596492,1.0,1.0
+Construction,What was the average invoice value for Manufacturing peppermint oil in Last year?,0.0,0.3502420485019684,0.26315789473684215,1.0,1.0,0.0,0.36173880100250244,0.44981412639405205,1.0,1.0
+Construction,What acount had our biggest expense in may last year?,0.0,0.40999993681907654,0.4122340425531915,1.0,1.0,0.0,0.48546329140663147,0.3037694013303769,1.0,1.0
+Construction,What was the first invoice value for Stationery & Printing in This fiscal year to date?,0.0,0.4100540280342102,0.20557029177718833,1.0,1.0,0.0,0.5071550607681274,0.30922242314647375,1.0,1.0
+Construction,What acount had our biggest expense This week to date?,0.0,0.40999993681907654,0.4262820512820513,1.0,1.0,0.0,0.0,0.1881014873140857,1.0,0.0
+Construction,What acount had our biggest expense This week to date?,0.0,0.40999993681907654,0.4262820512820513,1.0,1.0,0.0,0.5176650881767273,0.32352941176470584,1.0,1.0
+Construction,What acount had our biggest expense This year?,0.0,0.46349310874938965,0.4778481012658228,1.0,1.0,0.0,0.48546329140663147,0.37765957446808507,1.0,1.0
+Construction,What acount had our biggest expense in q1 this year?,0.0,0.4162086546421051,0.24269005847953218,1.0,1.0,0.0,0.7838214635848999,0.32163742690058483,1.0,1.0
+Construction,What acount had our biggest expense This fiscal year?,0.0,0.48546329140663147,0.33738601823708203,1.0,1.0,0.0,0.46349310874938965,0.31000000000000005,1.0,1.0
+Construction,What acount had our biggest expense This fiscal year?,0.0,0.48546329140663147,0.33738601823708203,1.0,1.0,0.0,0.0,0.18225419664268583,1.0,0.0
+Construction,What acount had our biggest expense This fiscal year?,0.0,0.46349310874938965,0.41033434650455924,1.0,1.0,0.0,0.46349310874938965,0.31000000000000005,1.0,1.0
+Construction,What acount had our biggest expense This fiscal year?,0.0,0.46349310874938965,0.41033434650455924,1.0,1.0,0.0,0.0,0.18225419664268583,1.0,0.0
+Construction,What acount had our biggest expense This week to date?,0.0,0.48546329140663147,0.2948717948717948,1.0,1.0,0.0,0.0,0.1881014873140857,1.0,0.0
+Construction,What acount had our biggest expense This week to date?,0.0,0.48546329140663147,0.2948717948717948,1.0,1.0,0.0,0.5176650881767273,0.32352941176470584,1.0,1.0
+Retail,How much revenue came through John Roberson This quarter?,0.0,0.0,0.33333333333333337,1.0,1.0,0.0,0.0,0.26883308714918763,1.0,1.0
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,0.0,0.5720335245132446,0.36170212765957444,1.0,1.0,0.0,0.43888887763023376,0.25098039215686274,1.0,1.0
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,0.0,0.5720335245132446,0.36170212765957444,1.0,1.0,0.0,0.43888887763023376,0.29889298892988925,1.0,1.0
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,0.0,0.5720335245132446,0.36170212765957444,1.0,1.0,0.0,0.43888887763023376,0.32340425531914896,1.0,1.0
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,0.0,0.5720335245132446,0.36170212765957444,1.0,1.0,0.0,0.43888887763023376,0.24710424710424705,1.0,1.0
+Retail,When was the last time we sold Photography,0.0,0.4085649847984314,0.2978723404255319,1.0,1.0,0.0,1.0,0.3191489361702128,1.0,1.0
+Retail,When was the last time we sold Application Hosting,0.0,0.4085649847984314,0.32098765432098764,1.0,1.0,0.0,1.0,0.345679012345679,1.0,1.0
+Retail,Compare sales by customer in may last year,0.0,0.49364617466926575,0.35451505016722407,1.0,1.0,0.0,0.481391042470932,0.3864406779661017,1.0,1.0
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,0.0,0.5720335245132446,0.39148936170212767,1.0,1.0,0.0,0.43888887763023376,0.25098039215686274,1.0,1.0
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,0.0,0.5720335245132446,0.39148936170212767,1.0,1.0,0.0,0.43888887763023376,0.29889298892988925,1.0,1.0
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,0.0,0.5720335245132446,0.39148936170212767,1.0,1.0,0.0,0.43888887763023376,0.32340425531914896,1.0,1.0
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,0.0,0.5720335245132446,0.39148936170212767,1.0,1.0,0.0,0.43888887763023376,0.24710424710424705,1.0,1.0
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,0.0,0.5720335245132446,0.39148936170212767,1.0,1.0,0.0,0.43888887763023376,0.25098039215686274,1.0,1.0
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,0.0,0.5720335245132446,0.39148936170212767,1.0,1.0,0.0,0.43888887763023376,0.29889298892988925,1.0,1.0
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,0.0,0.5720335245132446,0.39148936170212767,1.0,1.0,0.0,0.43888887763023376,0.32340425531914896,1.0,1.0
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,0.0,0.5720335245132446,0.39148936170212767,1.0,1.0,0.0,0.43888887763023376,0.24710424710424705,1.0,1.0
+Retail,Compare sales by customer Last fiscal year,0.0,0.48747631907463074,0.26530612244897955,1.0,1.0,0.0,0.0,0.18639575971731448,1.0,0.0
+Retail,Compare sales by customer Last fiscal year,0.0,0.48747631907463074,0.26530612244897955,1.0,1.0,0.0,0.48747631907463074,0.26182965299684546,1.0,1.0
+Retail,When was the last time we sold IT and telecommunication,0.0,0.408564954996109,0.30645161290322576,1.0,1.0,0.0,1.0,0.3266129032258065,1.0,1.0
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,0.0,0.5720335245132446,0.39148936170212767,1.0,1.0,0.0,0.43888887763023376,0.25098039215686274,1.0,1.0
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,0.0,0.5720335245132446,0.39148936170212767,1.0,1.0,0.0,0.43888887763023376,0.29889298892988925,1.0,1.0
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,0.0,0.5720335245132446,0.39148936170212767,1.0,1.0,0.0,0.43888887763023376,0.32340425531914896,1.0,1.0
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,0.0,0.5720335245132446,0.39148936170212767,1.0,1.0,0.0,0.43888887763023376,0.24710424710424705,1.0,1.0
+Retail,Compare sales by customer Last fiscal year,0.0,0.481391042470932,0.3111111111111111,1.0,1.0,0.0,0.0,0.18639575971731448,1.0,0.0
+Retail,Compare sales by customer Last fiscal year,0.0,0.481391042470932,0.3111111111111111,1.0,1.0,0.0,0.48747631907463074,0.26182965299684546,1.0,1.0
+Retail,Compare sales by customer Last year,0.0,0.49364617466926575,0.3370786516853933,1.0,1.0,0.0,0.44651490449905396,0.32131147540983607,1.0,1.0
+Retail,How much revenue came through Phillip Black Last 30 days?,0.0,0.0,0.3344155844155844,1.0,1.0,0.0,0.0,0.36496350364963503,1.0,1.0
+Retail,Compare sales by customer Last month,0.0,0.4820064604282379,0.3377049180327869,1.0,1.0,0.0,0.481391042470932,0.3848580441640379,1.0,1.0
+Retail,What was the total invoice value for Offering fixed income funds in Last fiscal year?,0.0,0.350242018699646,0.2042682926829268,1.0,1.0,0.0,0.3792473077774048,0.24319066147859925,1.0,1.0
+Service,How much did Natasha Chung spend on Home-care Service in July during last year?,0.0,0.5302005410194397,0.28034682080924855,1.0,1.0,0.0,0.489268958568573,0.3728323699421965,1.0,1.0
+Service,How many Service Provisioning did we sell to James Wood Last year?,0.0,0.6260335445404053,0.31081081081081086,1.0,1.0,0.0,0.7661851048469543,0.3587301587301587,1.0,1.0
+Service,Number of invoices created for Application service provisioning in This month to date?,0.0,0.5046272277832031,0.40591397849462363,1.0,1.0,0.0,0.46626317501068115,0.5815899581589958,1.0,1.0
+Service,How much did Johnathan Chaney spend on Full-service restaurants in July during last year?,0.0,0.49615633487701416,0.2913533834586466,1.0,1.0,0.0,0.489268958568573,0.3904494382022472,1.0,1.0
+Service,How much did Anna Chaney spend on Social Service in July during last year?,0.0,0.5302005410194397,0.3168316831683168,1.0,1.0,0.0,0.489268958568573,0.36363636363636365,1.0,1.0
+Service,How much did Andrew Parker spend on Full-service restaurants in July during last year?,0.0,0.50202476978302,0.3062015503875969,1.0,1.0,0.0,0.4806913733482361,0.2974504249291785,1.0,1.0
+Service,How many Service Provisioning did we sell to Leonard Bennett This fiscal year?,0.0,0.687751293182373,0.3017241379310345,1.0,1.0,0.0,0.687751293182373,0.3172413793103448,1.0,1.0
+Service,Number of invoices created for Home-care Service in This year?,0.0,0.4584078788757324,0.3058823529411765,1.0,1.0,0.0,0.3447822332382202,0.4434389140271493,1.0,1.0
+Service,Number of invoices created for Full-service restaurants in MTD?,0.0,0.377599835395813,0.5844155844155844,1.0,1.0,0.0,0.46626317501068115,0.5627705627705628,1.0,1.0
+Service,Number of invoices created for Full-service restaurants in This quarter to date?,0.0,0.4435201585292816,0.2909930715935335,1.0,1.0,0.0,0.5115982294082642,0.2523020257826888,1.0,1.0
+Service,How many Service Provisioning did we sell to Amanda Johnson in q1 this year?,0.0,0.6260335445404053,0.32668329177057354,1.0,1.0,0.0,0.7352898716926575,0.30729166666666663,1.0,1.0
+Service,Number of invoices created for Legal & Professional Fees in Last year?,0.0,0.414786159992218,0.29268292682926833,1.0,1.0,0.0,0.257538765668869,0.4631578947368421,1.0,1.0
+Service,How much did Kayla Lane spend on Providing 24-hour home care in July during last year?,0.0,0.5089242458343506,0.31090487238979114,1.0,1.0,0.0,0.46048596501350403,0.2564102564102564,1.0,1.0
+Service,How many Service Provider did we sell to Robert Townsend in jan this year?,0.0,0.5790433287620544,0.2613981762917933,1.0,1.0,0.0,0.6642824411392212,0.2902208201892744,1.0,1.0
+Service,How much did Cindy Sheppard spend on Home-care Service in July during last year?,0.0,0.47644153237342834,0.32087912087912085,1.0,1.0,0.0,0.49704602360725403,0.3198847262247838,1.0,1.0

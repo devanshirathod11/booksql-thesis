@@ -1,0 +1,1945 @@
+Industry,Question,Gold_SQL,Stratified_Raw_Response,Stratified_Generated_SQL
+Construction,What acount had our biggest expense This fiscal year to date?,"select account, sum(debit) from master_txn_table as t1 join chart_of_account_ob as t2 on t1.account = t2.account_name where account_type in ('expense','other expense') and transaction_date between date(current_date, '-3 months', 'start of year', '+3 months') and date(current_date, '-3 months', 'start of year','+1 year', '+3 months', '-1 day') group by account order by sum(debit) desc limit 1","To determine which account had the biggest expense for your construction company this fiscal year to date, you need to follow these steps:
+
+1. Identify the fiscal year range (e.g., from January 1st of the current year to today).
+2. Sum up all expenses for each account within that fiscal year.
+3. Find the account with the highest total expense.
+
+Here's how you can write an SQLite query to achieve this:
+
+```sql
+-- Step 1: Define the fiscal year range
+WITH FiscalYear AS (
+    SELECT 
+        MIN(transaction_date) AS start_date,
+        MAX(transaction_date) AS end_date
+    FROM Master_txn_table
+    WHERE transaction_date >= DATE('now', '-1 year')
+),
+
+-- Step 2: Calculate the total expense for each account in the fiscal year
+ExpenseByAccount AS (
+    SELECT 
+        account,
+        SUM(amount) AS total_expense
+    FROM Master_txn_table
+    WHERE transaction_date BETWEEN (SELECT start_date FROM FiscalYear) AND (SELECT end_date FROM FiscalYear)
+    GROUP BY account
+)
+
+-- Step 3: Find the account with the highest total expense
+SELECT 
+    account,
+    total_expense
+FROM ExpenseByAccount
+ORDER BY total_expense DESC
+LIMIT 1;
+```
+
+### Explanation:
+
+1. **FiscalYear CTE**: This Common Table Expression (CTE) calculates the start and end dates of the fiscal year. The `DATE('now', '-1 year')","-- Step 1: Define the fiscal year range
+WITH FiscalYear AS (
+    SELECT 
+        MIN(transaction_date) AS start_date,
+        MAX(transaction_date) AS end_date
+    FROM Master_txn_table
+    WHERE transaction_date >= DATE('now', '-1 year')
+),
+
+-- Step 2: Calculate the total expense for each account in the fiscal year
+ExpenseByAccount AS (
+    SELECT 
+        account,
+        SUM(amount) AS total_expense
+    FROM Master_txn_table
+    WHERE transaction_date BETWEEN (SELECT start_date FROM FiscalYear) AND (SELECT end_date FROM FiscalYear)
+    GROUP BY account
+)
+
+-- Step 3: Find the account with the highest total expense
+SELECT 
+    account,
+    total_expense
+FROM ExpenseByAccount
+ORDER BY total_expense DESC
+LIMIT 1;"
+Construction,What was the first bill Jesus Snyder received from Roger Vega?,"select min(credit) from master_txn_table where customers = ""jesus snyder"" and transaction_type = 'bill' and vendor = ""roger vega""","To determine what the first bill Jesus Snyder received from Roger Vega, we need to follow these steps:
+
+1. Identify the customer (Jesus Snyder) and the vendor (Roger Vega).
+2. Find all transactions where the customer is Jesus Snyder and the vendor is Roger Vega.
+3. Determine which of these transactions is the earliest in terms of `transaction_date`.
+
+Here's the SQLite query to achieve this:
+
+```sql
+SELECT 
+    mtt.transaction_id,
+    mtt.transaction_date,
+    mtt.customer_name,
+    mtt.vendor_name,
+    mtt.product_service,
+    mtt.quantity,
+    mtt.rate,
+    mtt.credit,
+    mtt.debit,
+    mtt.sale,
+    mtt.purchase,
+    mtt.billable,
+    mtt.invoiced,
+    mtt.cleared,
+    mtt.payment_method,
+    mtt.misc__business_specific_fields
+FROM 
+    Master_txn_table mtt
+JOIN 
+    customer_table ct ON mtt.business_id = ct.business_id AND mtt.customer_name = ct.customer_name
+JOIN 
+    vendor_table vt ON mtt.business_id = vt.business_id AND mtt.vendor_name = vt.vendor_name
+WHERE 
+    ct.customer_name = 'Jesus Snyder' AND vt.vendor_name = 'Roger Vega'
+ORDER BY 
+    mtt.transaction_date ASC
+LIMIT 1;
+```
+
+### Explanation:
+- **Master_txn_table**: This table contains all the transaction details.
+- **customer_table**: This table contains","SELECT 
+    mtt.transaction_id,
+    mtt.transaction_date,
+    mtt.customer_name,
+    mtt.vendor_name,
+    mtt.product_service,
+    mtt.quantity,
+    mtt.rate,
+    mtt.credit,
+    mtt.debit,
+    mtt.sale,
+    mtt.purchase,
+    mtt.billable,
+    mtt.invoiced,
+    mtt.cleared,
+    mtt.payment_method,
+    mtt.misc__business_specific_fields
+FROM 
+    Master_txn_table mtt
+JOIN 
+    customer_table ct ON mtt.business_id = ct.business_id AND mtt.customer_name = ct.customer_name
+JOIN 
+    vendor_table vt ON mtt.business_id = vt.business_id AND mtt.vendor_name = vt.vendor_name
+WHERE 
+    ct.customer_name = 'Jesus Snyder' AND vt.vendor_name = 'Roger Vega'
+ORDER BY 
+    mtt.transaction_date ASC
+LIMIT 1;"
+Construction,What acount had our biggest expense This year to date?,"select account, sum(debit) from master_txn_table as t1 join chart_of_account_ob as t2 on t1.account = t2.account_name where account_type in ('expense','other expense') and transaction_date between date(current_date, 'start of year') and date(current_date) group by account order by sum(debit) desc limit 1","To determine which account had the biggest expense so far this year, we need to follow these steps:
+
+1. Identify the relevant transactions that are expenses (i.e., where `transaction_type` is related to expenses).
+2. Sum up the amounts for each account involved in these transactions.
+3. Filter the results to only include transactions from the current year.
+4. Identify the account with the highest total expense.
+
+Here's the step-by-step SQLite query to achieve this:
+
+```sql
+WITH TotalExpenses AS (
+    SELECT 
+        m.account,
+        SUM(m.amount) AS total_expense
+    FROM 
+        Master_txn_table m
+    WHERE 
+        m.transaction_type IN ('Expense', 'Bill')  -- Adjust as necessary based on your specific accounting rules
+        AND strftime('%Y', m.transaction_date) = strftime('%Y', 'now')
+    GROUP BY 
+        m.account
+)
+SELECT 
+    account,
+    total_expense
+FROM 
+    TotalExpenses
+ORDER BY 
+    total_expense DESC
+LIMIT 1;
+```
+
+### Explanation:
+- **CTE (Common Table Expression):** The `TotalExpenses` CTE calculates the total expense for each account by summing up the `amount` column where the `transaction_type` is either 'Expense' or 'Bill'. You can adjust the `transaction_type` list based on your specific accounting rules.
+  
+- **Filtering by Year:** The `strftime('%Y', m.transaction_date)","WITH TotalExpenses AS (
+    SELECT 
+        m.account,
+        SUM(m.amount) AS total_expense
+    FROM 
+        Master_txn_table m
+    WHERE 
+        m.transaction_type IN ('Expense', 'Bill')  -- Adjust as necessary based on your specific accounting rules
+        AND strftime('%Y', m.transaction_date) = strftime('%Y', 'now')
+    GROUP BY 
+        m.account
+)
+SELECT 
+    account,
+    total_expense
+FROM 
+    TotalExpenses
+ORDER BY 
+    total_expense DESC
+LIMIT 1;"
+Construction,What acount had our biggest expense in may last year?,"select account, sum(debit) from master_txn_table as t1 join chart_of_account_ob as t2 on t1.account = t2.account_name where account_type in ('expense','other expense') and transaction_date between date(current_date, '-1 year', 'start of year', '+4 month') and date(current_date, '-1 year', 'start of year', '+5 month', '-1 day') group by account order by sum(debit) desc limit 1","To find the account that had the biggest expense in May of the previous year, we need to follow these steps:
+
+1. Identify the relevant transactions from the `Master_txn_table` where the `transaction_type` is 'purchase' and the `transaction_date` falls within May of the previous year.
+2. Sum up the `amount` for each account associated with these transactions.
+3. Identify the account with the highest sum.
+
+Here's the SQLite query to achieve this:
+
+```sql
+WITH monthly_expenses AS (
+    SELECT 
+        account,
+        SUM(amount) AS total_expense
+    FROM 
+        Master_txn_table
+    WHERE 
+        transaction_type = 'purchase'
+        AND strftime('%Y-%m', transaction_date) = '2023-05'
+    GROUP BY 
+        account
+)
+SELECT 
+    account_name,
+    account_full_name,
+    total_expense
+FROM 
+    monthly_expenses
+JOIN 
+    chart_of_account_OB 
+ON 
+    monthly_expenses.account = chart_of_account_OB.business_id
+ORDER BY 
+    total_expense DESC
+LIMIT 1;
+```
+
+### Explanation:
+1. **CTE (Common Table Expression)**: The `monthly_expenses` CTE calculates the total expense for each account in May of the previous year.
+2. **JOIN**: We join the `monthly_expenses` CTE with the `chart_of_account_OB` table to get the full name and type of the account","WITH monthly_expenses AS (
+    SELECT 
+        account,
+        SUM(amount) AS total_expense
+    FROM 
+        Master_txn_table
+    WHERE 
+        transaction_type = 'purchase'
+        AND strftime('%Y-%m', transaction_date) = '2023-05'
+    GROUP BY 
+        account
+)
+SELECT 
+    account_name,
+    account_full_name,
+    total_expense
+FROM 
+    monthly_expenses
+JOIN 
+    chart_of_account_OB 
+ON 
+    monthly_expenses.account = chart_of_account_OB.business_id
+ORDER BY 
+    total_expense DESC
+LIMIT 1;"
+Construction,What was the average bill James Torres received from Michael Miller?,"select avg(credit) from master_txn_table where customers = ""james torres"" and transaction_type = 'bill' and vendor = ""michael miller""","To find the average bill that James Torres received from Michael Miller, we need to follow these steps:
+
+1. Identify the relevant tables and columns:
+   - `customer_table` for customer information (including the customer name).
+   - `Master_txn_table` for transaction details (including the transaction amount, customer name, and vendor name).
+
+2. Filter the transactions where the customer is James Torres and the vendor is Michael Miller.
+
+3. Calculate the average of the transaction amounts.
+
+Here's the SQLite query to achieve this:
+
+```sql
+SELECT AVG(amount) AS average_bill
+FROM Master_txn_table
+WHERE customer_name = 'James Torres' AND vendor_name = 'Michael Miller';
+```
+
+This query will return the average bill that James Torres received from Michael Miller.","SELECT AVG(amount) AS average_bill
+FROM Master_txn_table
+WHERE customer_name = 'James Torres' AND vendor_name = 'Michael Miller';"
+Construction,What was the average bill Frank Wilkins received from Jennifer Harvey?,"select avg(credit) from master_txn_table where customers = ""frank wilkins"" and transaction_type = 'bill' and vendor = ""jennifer harvey""","To find the average bill that Frank Wilkins received from Jennifer Harvey, we need to follow these steps:
+
+1. Identify the relevant tables and columns:
+   - `customer_table` for customer information (including the customer name).
+   - `Master_txn_table` for transaction details (including the transaction amount, customer name, and vendor name).
+
+2. Filter the transactions where the customer is Frank Wilkins and the vendor is Jennifer Harvey.
+
+3. Calculate the average of the transaction amounts.
+
+Here's the SQLite query to achieve this:
+
+```sql
+SELECT AVG(amount) AS average_bill
+FROM Master_txn_table
+WHERE customer_name = 'Frank Wilkins' AND vendor_name = 'Jennifer Harvey';
+```
+
+This query will return the average bill that Frank Wilkins received from Jennifer Harvey. If there are no transactions matching the criteria, the result will be NULL or an error depending on how the database handles such cases.","SELECT AVG(amount) AS average_bill
+FROM Master_txn_table
+WHERE customer_name = 'Frank Wilkins' AND vendor_name = 'Jennifer Harvey';"
+Construction,What acount had our biggest expense This fiscal year?,"select account, sum(debit) from master_txn_table as t1 join chart_of_account_ob as t2 on t1.account = t2.account_name where account_type in ('expense','other expense') and transaction_date between date(current_date, '-3 months', 'start of year', '+3 months') and date(current_date) group by account order by sum(debit) desc limit 1","To determine which account had the biggest expense for your construction company this fiscal year, you need to follow these steps:
+
+1. Identify the fiscal year range (e.g., from January 1st of the current year to December 31st of the same year).
+2. Sum up all expenses (debits) for each account in the fiscal year.
+3. Find the account with the highest total expense.
+
+Here's how you can write an SQLite query to achieve this:
+
+```sql
+-- Step 1: Define the fiscal year range
+WITH FiscalYear AS (
+    SELECT 
+        MIN(transaction_date) AS start_date,
+        MAX(transaction_date) AS end_date
+    FROM Master_txn_table
+    WHERE transaction_date BETWEEN DATE('now', '-1 year') AND DATE('now')
+),
+
+-- Step 2: Calculate the total expense for each account in the fiscal year
+ExpenseByAccount AS (
+    SELECT 
+        account,
+        SUM(debit) AS total_expense
+    FROM Master_txn_table
+    WHERE transaction_date BETWEEN (SELECT start_date FROM FiscalYear) AND (SELECT end_date FROM FiscalYear)
+    GROUP BY account
+)
+
+-- Step 3: Find the account with the highest total expense
+SELECT 
+    account,
+    total_expense
+FROM ExpenseByAccount
+ORDER BY total_expense DESC
+LIMIT 1;
+```
+
+### Explanation:
+1. **FiscalYear CTE**: This Common Table Expression (CTE) calculates the start and end","-- Step 1: Define the fiscal year range
+WITH FiscalYear AS (
+    SELECT 
+        MIN(transaction_date) AS start_date,
+        MAX(transaction_date) AS end_date
+    FROM Master_txn_table
+    WHERE transaction_date BETWEEN DATE('now', '-1 year') AND DATE('now')
+),
+
+-- Step 2: Calculate the total expense for each account in the fiscal year
+ExpenseByAccount AS (
+    SELECT 
+        account,
+        SUM(debit) AS total_expense
+    FROM Master_txn_table
+    WHERE transaction_date BETWEEN (SELECT start_date FROM FiscalYear) AND (SELECT end_date FROM FiscalYear)
+    GROUP BY account
+)
+
+-- Step 3: Find the account with the highest total expense
+SELECT 
+    account,
+    total_expense
+FROM ExpenseByAccount
+ORDER BY total_expense DESC
+LIMIT 1;"
+Construction,What acount had our biggest expense in q1 this year?,"select account, sum(debit) from master_txn_table as t1 join chart_of_account_ob as t2 on t1.account = t2.account_name where account_type in ('expense','other expense') and transaction_date between date(current_date, 'start of year') and date(current_date, 'start of year', '+3 month', '-1 day') group by account order by sum(debit) desc limit 1","To determine the account that had the biggest expense in Q1 of the current year, we need to follow these steps:
+
+1. Identify the transactions from Q1.
+2. Filter out only the expenses (i.e., where `debit` is greater than `credit`).
+3. Sum up the amounts for each account.
+4. Identify the account with the highest total expense.
+
+Here's the SQLite query to achieve this:
+
+```sql
+WITH Q1_expenses AS (
+    SELECT 
+        account,
+        SUM(debit) AS total_debit
+    FROM 
+        Master_txn_table
+    WHERE 
+        transaction_date BETWEEN DATE('now', '-3 months') AND DATE('now')
+        AND debit > 0
+    GROUP BY 
+        account
+)
+SELECT 
+    account,
+    total_debit
+FROM 
+    Q1_expenses
+ORDER BY 
+    total_debit DESC
+LIMIT 1;
+```
+
+### Explanation:
+- **Q1_expenses CTE**: This Common Table Expression (CTE) calculates the total debit for each account within the specified Q1 period.
+- **WHERE clause**: Filters transactions that fall within the first quarter of the current year (`DATE('now', '-3 months')` to `DATE('now')`).
+- **GROUP BY**: Groups the results by account.
+- **SUM(debit)**: Sums up the debit amounts for each account.
+- **ORDER BY total_debit DESC**: Orders the results in descending order based","WITH Q1_expenses AS (
+    SELECT 
+        account,
+        SUM(debit) AS total_debit
+    FROM 
+        Master_txn_table
+    WHERE 
+        transaction_date BETWEEN DATE('now', '-3 months') AND DATE('now')
+        AND debit > 0
+    GROUP BY 
+        account
+)
+SELECT 
+    account,
+    total_debit
+FROM 
+    Q1_expenses
+ORDER BY 
+    total_debit DESC
+LIMIT 1;"
+Construction,What acount had our biggest expense This fiscal year?,"select account, sum(debit) from master_txn_table as t1 join chart_of_account_ob as t2 on t1.account = t2.account_name where account_type in ('expense','other expense') and transaction_date between date(current_date, '-3 months', 'start of year', '+3 months') and date(current_date) group by account order by sum(debit) desc limit 1","To determine which account had the biggest expense for your construction company this fiscal year, you need to follow these steps:
+
+1. Identify the relevant fiscal year from the `Master_txn_table`.
+2. Sum up the expenses (credit) for each account in the fiscal year.
+3. Find the account with the highest total expense.
+
+Here's a step-by-step SQLite query to achieve this:
+
+```sql
+-- Step 1: Determine the fiscal year range
+SELECT 
+    MIN(transaction_date) AS start_date,
+    MAX(transaction_date) AS end_date
+FROM 
+    Master_txn_table
+WHERE 
+    transaction_type = 'Expense' AND 
+    business_id = (SELECT business_id FROM employee_table WHERE deleted = 0 LIMIT 1); -- Assuming only one business_id is relevant
+
+-- Step 2: Calculate the total expense for each account in the fiscal year
+WITH Fiscal_Year_Expenses AS (
+    SELECT 
+        account,
+        SUM(CASE WHEN transaction_type = 'Expense' THEN amount ELSE 0 END) AS total_expense
+    FROM 
+        Master_txn_table
+    WHERE 
+        transaction_type = 'Expense' AND 
+        business_id = (SELECT business_id FROM employee_table WHERE deleted = 0 LIMIT 1) -- Assuming only one business_id is relevant
+        AND transaction_date BETWEEN start_date AND end_date
+    GROUP BY 
+        account
+)
+-- Step 3: Find the account with the highest total expense
+SELECT 
+    account,
+","To determine which account had the biggest expense for your construction company this fiscal year, you need to follow these steps:
+
+1. Identify the relevant fiscal year from the `Master_txn_table`.
+2. Sum up the expenses (credit) for each account in the fiscal year.
+3. Find the account with the highest total expense.
+
+Here's a step-by-step SQLite query to achieve this:
+
+```sql
+-- Step 1: Determine the fiscal year range
+SELECT 
+    MIN(transaction_date) AS start_date,
+    MAX(transaction_date) AS end_date
+FROM 
+    Master_txn_table
+WHERE 
+    transaction_type = 'Expense' AND 
+    business_id = (SELECT business_id FROM employee_table WHERE deleted = 0 LIMIT 1); -- Assuming only one business_id is relevant
+
+-- Step 2: Calculate the total expense for each account in the fiscal year
+WITH Fiscal_Year_Expenses AS (
+    SELECT 
+        account,
+        SUM(CASE WHEN transaction_type = 'Expense' THEN amount ELSE 0 END) AS total_expense
+    FROM 
+        Master_txn_table
+    WHERE 
+        transaction_type = 'Expense' AND 
+        business_id = (SELECT business_id FROM employee_table WHERE deleted = 0 LIMIT 1) -- Assuming only one business_id is relevant
+        AND transaction_date BETWEEN start_date AND end_date
+    GROUP BY 
+        account
+)
+-- Step 3: Find the account with the highest total expense
+SELECT 
+    account,"
+Construction,What acount had our biggest expense in may last year?,"select account, sum(debit) from master_txn_table as t1 join chart_of_account_ob as t2 on t1.account = t2.account_name where account_type in ('expense','other expense') and transaction_date between date(current_date, '-1 year', 'start of year', '+4 month') and date(current_date, '-1 year', 'start of year', '+5 month', '-1 day') group by account order by sum(debit) desc limit 1","To determine which account had the biggest expense in May of the previous year, we need to follow these steps:
+
+1. Identify the relevant transactions from the `Master_txn_table` that occurred in May of the previous year.
+2. Sum up the expenses (credit) for each account.
+3. Identify the account with the highest sum.
+
+Here's the SQLite query to achieve this:
+
+```sql
+WITH monthly_expenses AS (
+    SELECT 
+        account,
+        SUM(CASE WHEN transaction_type = 'Expense' THEN amount ELSE 0 END) AS total_expense
+    FROM 
+        Master_txn_table
+    WHERE 
+        transaction_date BETWEEN DATE('now', '-1 year') AND DATE('now', '-1 year', 'month 5')
+    GROUP BY 
+        account
+)
+SELECT 
+    account_name,
+    account_full_name,
+    total_expense
+FROM 
+    monthly_expenses
+JOIN 
+    chart_of_account_OB ON monthly_expenses.account = chart_of_account_OB.account_name
+ORDER BY 
+    total_expense DESC
+LIMIT 1;
+```
+
+### Explanation:
+1. **CTE (Common Table Expression)**: The `monthly_expenses` CTE calculates the total expense for each account in May of the previous year.
+   - `SUM(CASE WHEN transaction_type = 'Expense' THEN amount ELSE 0 END)` sums up the amounts where `transaction_type` is 'Expense'.
+   - `GROUP BY account` groups the results by account","WITH monthly_expenses AS (
+    SELECT 
+        account,
+        SUM(CASE WHEN transaction_type = 'Expense' THEN amount ELSE 0 END) AS total_expense
+    FROM 
+        Master_txn_table
+    WHERE 
+        transaction_date BETWEEN DATE('now', '-1 year') AND DATE('now', '-1 year', 'month 5')
+    GROUP BY 
+        account
+)
+SELECT 
+    account_name,
+    account_full_name,
+    total_expense
+FROM 
+    monthly_expenses
+JOIN 
+    chart_of_account_OB ON monthly_expenses.account = chart_of_account_OB.account_name
+ORDER BY 
+    total_expense DESC
+LIMIT 1;"
+Construction,What acount had our biggest expense YTD?,"select account, sum(debit) from master_txn_table as t1 join chart_of_account_ob as t2 on t1.account = t2.account_name where account_type in ('expense','other expense') and transaction_date between date(current_date, 'start of year') and date(current_date)group by account order by sum(debit) desc limit 1","To determine which account had the biggest expense year-to-date (YTD), we need to sum up all expenses for each account and then identify the one with the highest total. Here's a step-by-step approach to achieve this using SQLite:
+
+1. Identify the relevant columns from the `Master_txn_table` that will help us filter transactions related to expenses.
+2. Sum up the `amount` column where the `transaction_type` is 'Expense'.
+3. Group the results by `account`.
+4. Order the results in descending order based on the sum of `amount`.
+5. Limit the result to the top 1 entry.
+
+Here's the corresponding SQL query:
+
+```sql
+SELECT 
+    account,
+    SUM(amount) AS total_expense
+FROM 
+    Master_txn_table
+WHERE 
+    transaction_type = 'Expense'
+GROUP BY 
+    account
+ORDER BY 
+    total_expense DESC
+LIMIT 1;
+```
+
+### Explanation:
+- **SELECT account, SUM(amount) AS total_expense**: This selects the `account` and sums up the `amount` for each account.
+- **FROM Master_txn_table**: Specifies the table from which to retrieve the data.
+- **WHERE transaction_type = 'Expense'**: Filters the rows to only include those where the `transaction_type` is 'Expense'.
+- **GROUP BY account**: Groups the results by `account` so that the sum can be calculated per account.
+- **ORDER BY total_expense DESC**: Orders the results","SELECT 
+    account,
+    SUM(amount) AS total_expense
+FROM 
+    Master_txn_table
+WHERE 
+    transaction_type = 'Expense'
+GROUP BY 
+    account
+ORDER BY 
+    total_expense DESC
+LIMIT 1;"
+Construction,What acount had our biggest expense This week to date?,"select account, sum(debit) from master_txn_table as t1 join chart_of_account_ob as t2 on t1.account = t2.account_name where account_type in ('expense','other expense') and transaction_date between date( current_date, ""weekday 0"", ""-7 days"") and date( current_date) group by account order by sum(debit) desc limit 1","To determine the account that had the biggest expense this week to date, we need to follow these steps:
+
+1. Identify the relevant transactions from the `Master_txn_table` that occurred this week.
+2. Sum up the expenses (credit) for each account.
+3. Find the account with the highest total expense.
+
+Here's the SQLite query to achieve this:
+
+```sql
+WITH WeeklyExpenses AS (
+    SELECT 
+        account,
+        SUM(amount) AS total_expense
+    FROM 
+        Master_txn_table
+    WHERE 
+        transaction_date >= DATE('now', '-7 days')
+        AND transaction_type = 'Expense'
+        AND debit > 0
+    GROUP BY 
+        account
+)
+SELECT 
+    account_name,
+    total_expense
+FROM 
+    WeeklyExpenses
+JOIN 
+    chart_of_account_OB ON WeeklyExpenses.account = chart_of_account_OB.business_id
+ORDER BY 
+    total_expense DESC
+LIMIT 1;
+```
+
+### Explanation:
+1. **WeeklyExpenses CTE**: This Common Table Expression (CTE) calculates the total expense for each account within the last 7 days. It filters out only those transactions where the `transaction_type` is 'Expense' and `debit` is greater than 0 (indicating an expense).
+2. **JOIN with chart_of_account_OB**: We join the `WeeklyExpenses` CTE with the `chart_of_account_OB` table to get the full name of the","WITH WeeklyExpenses AS (
+    SELECT 
+        account,
+        SUM(amount) AS total_expense
+    FROM 
+        Master_txn_table
+    WHERE 
+        transaction_date >= DATE('now', '-7 days')
+        AND transaction_type = 'Expense'
+        AND debit > 0
+    GROUP BY 
+        account
+)
+SELECT 
+    account_name,
+    total_expense
+FROM 
+    WeeklyExpenses
+JOIN 
+    chart_of_account_OB ON WeeklyExpenses.account = chart_of_account_OB.business_id
+ORDER BY 
+    total_expense DESC
+LIMIT 1;"
+Construction,What acount had our biggest expense This year?,"select account, sum(debit) from master_txn_table as t1 join chart_of_account_ob as t2 on t1.account = t2.account_name where account_type in ('expense','other expense') and transaction_date between date(current_date, 'start of year') and date(current_date) group by account order by sum(debit) desc limit 1","To determine which account had the biggest expense for your construction company this year, you need to follow these steps:
+
+1. Identify the relevant transactions that represent expenses.
+2. Sum up the amounts for each account.
+3. Find the account with the highest total expense.
+
+Here's how you can achieve this using an SQLite query:
+
+### Step 1: Identify Relevant Transactions
+Expense transactions typically involve a debit in the expense account and a credit in the revenue or other accounts. We'll assume that the `Master_txn_table` has a column `account` that indicates the account being debited (expense) and a column `transaction_type` that indicates whether it's an expense (`purchase`, `billable`, etc.).
+
+### Step 2: Sum Up the Amounts for Each Account
+We will group the transactions by their `account` and sum up the `amount` where the `transaction_type` is an expense.
+
+### Step 3: Find the Account with the Highest Total Expense
+We will use the `MAX` function to find the account with the highest total expense.
+
+Here's the SQL query to achieve this:
+
+```sql
+SELECT 
+    account,
+    SUM(amount) AS total_expense
+FROM 
+    Master_txn_table
+WHERE 
+    transaction_type IN ('purchase', 'billable') -- Adjust as necessary based on your specific expense types
+GROUP BY 
+    account
+ORDER BY 
+    total_expense DESC
+LIMIT 1;
+```
+
+### Explanation:
+- **SELECT","SELECT 
+    account,
+    SUM(amount) AS total_expense
+FROM 
+    Master_txn_table
+WHERE 
+    transaction_type IN ('purchase', 'billable') -- Adjust as necessary based on your specific expense types
+GROUP BY 
+    account
+ORDER BY 
+    total_expense DESC
+LIMIT 1;"
+Construction,What acount had our biggest expense This week to date?,"select account, sum(debit) from master_txn_table as t1 join chart_of_account_ob as t2 on t1.account = t2.account_name where account_type in ('expense','other expense') and transaction_date between date( current_date, ""weekday 0"", ""-7 days"") and date( current_date) group by account order by sum(debit) desc limit 1","To determine which account had the biggest expense this week to date, we need to follow these steps:
+
+1. Identify the relevant transactions that occurred this week.
+2. Sum up the expenses for each account.
+3. Find the account with the highest total expense.
+
+Here's a step-by-step SQLite query to achieve this:
+
+1. **Identify Transactions from This Week**: We need to filter transactions based on the `transaction_date` being within the current week.
+2. **Sum Expenses by Account**: We will sum the `amount` for each account in the filtered transactions.
+3. **Find the Account with the Highest Expense**: We will use an aggregate function to find the maximum sum of expenses.
+
+Assuming today is the current date and we want to consider the last 7 days as ""this week"":
+
+```sql
+-- Step 1: Get the current date and the start of this week
+SELECT 
+    DATE('now', 'localtime') AS current_date,
+    DATE('now', 'localtime', '-7 days') AS start_of_week;
+
+-- Step 2: Filter transactions from this week and sum expenses by account
+WITH weekly_expenses AS (
+    SELECT 
+        m.account,
+        SUM(m.amount) AS total_expense
+    FROM 
+        Master_txn_table m
+    WHERE 
+        m.transaction_date >= DATE('now', 'localtime', '-7 days')
+        AND m.transaction_date < DATE('now', 'localtime')
+        AND m.transaction","To determine which account had the biggest expense this week to date, we need to follow these steps:
+
+1. Identify the relevant transactions that occurred this week.
+2. Sum up the expenses for each account.
+3. Find the account with the highest total expense.
+
+Here's a step-by-step SQLite query to achieve this:
+
+1. **Identify Transactions from This Week**: We need to filter transactions based on the `transaction_date` being within the current week.
+2. **Sum Expenses by Account**: We will sum the `amount` for each account in the filtered transactions.
+3. **Find the Account with the Highest Expense**: We will use an aggregate function to find the maximum sum of expenses.
+
+Assuming today is the current date and we want to consider the last 7 days as ""this week"":
+
+```sql
+-- Step 1: Get the current date and the start of this week
+SELECT 
+    DATE('now', 'localtime') AS current_date,
+    DATE('now', 'localtime', '-7 days') AS start_of_week;
+
+-- Step 2: Filter transactions from this week and sum expenses by account
+WITH weekly_expenses AS (
+    SELECT 
+        m.account,
+        SUM(m.amount) AS total_expense
+    FROM 
+        Master_txn_table m
+    WHERE 
+        m.transaction_date >= DATE('now', 'localtime', '-7 days')
+        AND m.transaction_date < DATE('now', 'localtime')
+        AND m.transaction"
+Construction,What was the mean bill Amanda Fry received from Robin Wright?,"select avg(credit) from master_txn_table where customers = ""amanda fry"" and transaction_type = 'bill' and vendor = ""robin wright""","To find the mean bill Amanda Fry received from Robin Wright, we need to follow these steps:
+
+1. Identify the relevant tables and columns that contain the necessary information.
+2. Filter the data to include only the transactions where the customer is Amanda Fry and the vendor is Robin Wright.
+3. Calculate the total amount of the bills received by Amanda Fry from Robin Wright.
+4. Determine the number of transactions (bills) received by Amanda Fry from Robin Wright.
+5. Calculate the mean (average) bill amount.
+
+Here's the step-by-step SQLite query to achieve this:
+
+```sql
+-- Step 1: Select the required columns
+SELECT 
+    AVG(amount) AS mean_bill
+FROM 
+    Master_txn_table
+WHERE 
+    customer_name = 'Amanda Fry' AND 
+    vendor_name = 'Robin Wright';
+```
+
+Explanation:
+- `AVG(amount)` calculates the average value of the `amount` column, which represents the bill amounts.
+- The `WHERE` clause filters the rows to include only those where the `customer_name` is 'Amanda Fry' and the `vendor_name` is 'Robin Wright'.
+
+This query will return the mean bill amount that Amanda Fry received from Robin Wright.","-- Step 1: Select the required columns
+SELECT 
+    AVG(amount) AS mean_bill
+FROM 
+    Master_txn_table
+WHERE 
+    customer_name = 'Amanda Fry' AND 
+    vendor_name = 'Robin Wright';"
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,"select avg(quantity_per_transaction) from (select transaction_id, sum(quantity) as quantity_per_transaction from master_txn_table where transaction_type = 'sales receipt' and payment_method = ""[payment_method]"" group by transaction_id)","To compute the average quantities ordered for each payment method, we need to join multiple tables to get the necessary information. Here's a step-by-step breakdown of how to achieve this using an SQLite query:
+
+1. **Join the `Master_txn_table` with `product_service_table`**: To get the product service details.
+2. **Join the `Master_txn_table` with `customer_table`**: To get the customer details.
+3. **Filter the records where `transaction_type` is 'sale'**: This ensures that only sales transactions are considered.
+4. **Group by `payment_method` and calculate the average quantity**: This will give us the average quantity ordered per payment method.
+
+Here's the SQL query to achieve this:
+
+```sql
+SELECT 
+    pm.payment_method,
+    AVG(mtt.quantity) AS avg_quantity
+FROM 
+    Master_txn_table mtt
+JOIN 
+    product_service_table psv ON mtt.product_service = psv.product_service
+JOIN 
+    customer_table ct ON mtt.customer_name = ct.customer_name
+JOIN 
+    payment_method pm ON mtt.payment_method = pm.payment_method
+WHERE 
+    mtt.transaction_type = 'sale'
+GROUP BY 
+    pm.payment_method;
+```
+
+### Explanation:
+- **Master_txn_table**: Contains all transaction details including the payment method.
+- **product_service_table**: Maps the product_service codes to their descriptions.
+- **customer_table**: Provides customer details which are not directly needed but might be useful for context","SELECT 
+    pm.payment_method,
+    AVG(mtt.quantity) AS avg_quantity
+FROM 
+    Master_txn_table mtt
+JOIN 
+    product_service_table psv ON mtt.product_service = psv.product_service
+JOIN 
+    customer_table ct ON mtt.customer_name = ct.customer_name
+JOIN 
+    payment_method pm ON mtt.payment_method = pm.payment_method
+WHERE 
+    mtt.transaction_type = 'sale'
+GROUP BY 
+    pm.payment_method;"
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,"select avg(quantity_per_transaction) from (select transaction_id, sum(quantity) as quantity_per_transaction from master_txn_table where transaction_type = 'sales receipt' and payment_method = ""[payment_method]"" group by transaction_id)","To compute the average quantities ordered for each payment method, we need to join the `Master_txn_table` with the `product_service_table` and filter by the `transaction_type` that corresponds to sales receipts (typically 'SALE' or similar). We will then group by the `payment_method` and calculate the average of the `quantity` column.
+
+Here's the step-by-step SQLite query:
+
+1. Join the `Master_txn_table` with the `product_service_table`.
+2. Filter the records where `transaction_type` is 'SALE'.
+3. Group the results by `payment_method`.
+4. Calculate the average of the `quantity` column.
+
+```sql
+SELECT 
+    pm.payment_method,
+    AVG(pst.quantity) AS avg_quantity
+FROM 
+    Master_txn_table m
+JOIN 
+    product_service_table pst ON m.business_id = pst.business_id AND m.product_service = pst.product_service
+WHERE 
+    m.transaction_type = 'SALE'
+GROUP BY 
+    pm.payment_method;
+```
+
+### Explanation:
+- **Master_txn_table**: This table contains all transaction records including sales receipts.
+- **product_service_table**: This table maps the product or service codes to their respective names and types.
+- **JOIN**: We join these two tables on the `business_id` and `product_service` columns to match the transactions with the corresponding products/services.
+- **WHERE**: We filter the records to include only those where the `transaction_type` is 'SALE'.
+","SELECT 
+    pm.payment_method,
+    AVG(pst.quantity) AS avg_quantity
+FROM 
+    Master_txn_table m
+JOIN 
+    product_service_table pst ON m.business_id = pst.business_id AND m.product_service = pst.product_service
+WHERE 
+    m.transaction_type = 'SALE'
+GROUP BY 
+    pm.payment_method;"
+Retail,Compare sales by customer in may last year,"select customers, sum(credit) from master_txn_table where account in ('income','other income') and transaction_date between date(current_date, '-1 year', 'start of year', '+4 month') and date(current_date, '-1 year', 'start of year', '+5 month', '-1 day') group by customers","To compare sales by customer in May of the previous year, we need to follow these steps:
+
+1. Identify the relevant tables and columns that contain information about sales.
+2. Filter the data to include only sales transactions from May of the previous year.
+3. Group the results by customer to calculate the total sales for each customer.
+4. Execute the query using SQLite.
+
+Here is the step-by-step SQLite query to achieve this:
+
+```sql
+SELECT 
+    c.customer_name AS customer,
+    SUM(m.sale) AS total_sales
+FROM 
+    Master_txn_table m
+JOIN 
+    customer_table c ON m.business_id = c.business_id AND m.customer_name = c.customer_name
+WHERE 
+    m.transaction_date BETWEEN DATE('now', '-1 year') AND DATE('now', '-1 year', 'month 5')
+GROUP BY 
+    c.customer_name;
+```
+
+### Explanation:
+- **Master_txn_table**: This table contains all transaction details including sales (`sale` column).
+- **customer_table**: This table contains customer information.
+- **JOIN**: We join `Master_txn_table` with `customer_table` on `business_id` and `customer_name` to get the customer's name.
+- **WHERE**: The condition `DATE('now', '-1 year') AND DATE('now', '-1 year', 'month 5')` filters the transactions to be within the month of May of the previous year.
+- **SUM(m.sale)**: This calculates the total sales","SELECT 
+    c.customer_name AS customer,
+    SUM(m.sale) AS total_sales
+FROM 
+    Master_txn_table m
+JOIN 
+    customer_table c ON m.business_id = c.business_id AND m.customer_name = c.customer_name
+WHERE 
+    m.transaction_date BETWEEN DATE('now', '-1 year') AND DATE('now', '-1 year', 'month 5')
+GROUP BY 
+    c.customer_name;"
+Retail,Compare sales by customer Last fiscal year,"select customers, sum(credit) from master_txn_table where account in ('income','other income') and transaction_date between date(current_date, '-3 months', 'start of year','-1 years', '+3 months') and date(current_date, '-3 months', 'start of year','-1 years', '+3 months', '+1 years', '-1 days') group by customers","To compare sales by customer over the last fiscal year in SQLite, we need to follow these steps:
+
+1. Identify the fiscal year range (e.g., from January 1st of the previous year to December 31st of the previous year).
+2. Filter the `Master_txn_table` to include only transactions that fall within this fiscal year.
+3. Group the results by customer and sum up the sales amounts.
+
+Here is the SQL query to achieve this:
+
+```sql
+-- Step 1: Determine the fiscal year range
+SELECT 
+    strftime('%Y', 'now') - 1 AS fiscal_year,
+    strftime('%m-%d', 'now') - 90 AS start_date,
+    strftime('%m-%d', 'now') - 365 AS end_date
+FROM 
+    master_txn_table;
+
+-- Step 2: Filter the Master_txn_table for the last fiscal year
+WITH FiscalYear AS (
+    SELECT 
+        strftime('%Y', 'now') - 1 AS fiscal_year,
+        strftime('%m-%d', 'now') - 90 AS start_date,
+        strftime('%m-%d', 'now') - 365 AS end_date
+    FROM 
+        master_txn_table
+),
+SalesByCustomer AS (
+    SELECT 
+        m.customer_name,
+        SUM(m.amount) AS total_sales
+    FROM 
+        master_txn_table m
+    JOIN 
+        customer_table c ON m.business_id = c.business_id","To compare sales by customer over the last fiscal year in SQLite, we need to follow these steps:
+
+1. Identify the fiscal year range (e.g., from January 1st of the previous year to December 31st of the previous year).
+2. Filter the `Master_txn_table` to include only transactions that fall within this fiscal year.
+3. Group the results by customer and sum up the sales amounts.
+
+Here is the SQL query to achieve this:
+
+```sql
+-- Step 1: Determine the fiscal year range
+SELECT 
+    strftime('%Y', 'now') - 1 AS fiscal_year,
+    strftime('%m-%d', 'now') - 90 AS start_date,
+    strftime('%m-%d', 'now') - 365 AS end_date
+FROM 
+    master_txn_table;
+
+-- Step 2: Filter the Master_txn_table for the last fiscal year
+WITH FiscalYear AS (
+    SELECT 
+        strftime('%Y', 'now') - 1 AS fiscal_year,
+        strftime('%m-%d', 'now') - 90 AS start_date,
+        strftime('%m-%d', 'now') - 365 AS end_date
+    FROM 
+        master_txn_table
+),
+SalesByCustomer AS (
+    SELECT 
+        m.customer_name,
+        SUM(m.amount) AS total_sales
+    FROM 
+        master_txn_table m
+    JOIN 
+        customer_table c ON m.business_id = c.business_id"
+Retail,When was the last time we sold IT and telecommunication,"select transaction_date from master_txn_table as t1 join chart_of_account_ob as t2 on t1.account = t2.account_name where account_type in ('income','other income') and product_service = ""it and telecommunication"" order by transaction_date desc limit 1","To determine when the last time you sold IT and telecommunication products or services, you can use the `Master_txn_table` to filter transactions related to these categories and then find the most recent date.
+
+Here's a step-by-step approach:
+
+1. Identify the relevant columns from the `Master_txn_table` that will help in filtering and identifying the latest transaction.
+2. Use the `WHERE` clause to filter transactions where the `product_service_type` is either 'IT' or 'telecommunication'.
+3. Use the `ORDER BY` clause to sort the results by `transaction_date` in descending order.
+4. Use the `LIMIT` clause to get only the top result (i.e., the most recent transaction).
+
+Here is the corresponding SQLite query:
+
+```sql
+SELECT transaction_date
+FROM Master_txn_table
+WHERE product_service_type IN ('IT', 'telecommunication')
+ORDER BY transaction_date DESC
+LIMIT 1;
+```
+
+This query will return the most recent date of a transaction involving either an IT or telecommunication product or service. If there are no such transactions, it will return NULL.","SELECT transaction_date
+FROM Master_txn_table
+WHERE product_service_type IN ('IT', 'telecommunication')
+ORDER BY transaction_date DESC
+LIMIT 1;"
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,"select avg(quantity_per_transaction) from (select transaction_id, sum(quantity) as quantity_per_transaction from master_txn_table where transaction_type = 'sales receipt' and payment_method = ""[payment_method]"" group by transaction_id)","To compute the average quantities ordered for each payment method, we need to join the `Master_txn_table` with the `product_service_table` and filter the records where `transaction_type` is 'sale'. Then, we can group by `payment_method` and calculate the average of the `quantity` column.
+
+Here's the step-by-step SQLite query:
+
+1. Join the `Master_txn_table` with the `product_service_table` on the `business_id`.
+2. Filter the records where `transaction_type` is 'sale'.
+3. Group the results by `payment_method`.
+4. Calculate the average of the `quantity` column.
+
+```sql
+SELECT 
+    payment_method,
+    AVG(quantity) AS avg_quantity
+FROM 
+    Master_txn_table
+JOIN 
+    product_service_table ON Master_txn_table.business_id = product_service_table.business_id
+WHERE 
+    transaction_type = 'sale'
+GROUP BY 
+    payment_method;
+```
+
+This query will give you the average quantities ordered for each payment method.","SELECT 
+    payment_method,
+    AVG(quantity) AS avg_quantity
+FROM 
+    Master_txn_table
+JOIN 
+    product_service_table ON Master_txn_table.business_id = product_service_table.business_id
+WHERE 
+    transaction_type = 'sale'
+GROUP BY 
+    payment_method;"
+Retail,What was the total invoice value for Offering fixed income funds in Last fiscal year?,"select sum(credit) from master_txn_table where transaction_type = 'invoice' and instr(account,""offering fixed income funds"") and transaction_date between date(current_date, '-3 months', 'start of year','-1 years', '+3 months') and date(current_date, '-3 months', 'start of year','-1 years', '+3 months', '+1 years', '-1 days')","To find the total invoice value for offering fixed income funds in the last fiscal year, we need to follow these steps:
+
+1. Identify the relevant tables and columns that contain information about invoices and fixed income offerings.
+2. Filter the data to include only the last fiscal year.
+3. Sum up the total invoice values.
+
+Assuming that the fiscal year is the same as the calendar year (January 1 to December 31), we can use the `transaction_date` column to filter the data for the last fiscal year. We also need to join the necessary tables to get the invoice details.
+
+Here's the step-by-step SQLite query:
+
+```sql
+SELECT 
+    SUM(amount) AS total_invoice_value
+FROM 
+    Master_txn_table
+JOIN 
+    product_service_table ON Master_txn_table.business_id = product_service_table.business_id AND Master_txn_table.product_service = product_service_table.product_service
+WHERE 
+    Master_txn_table.transaction_date BETWEEN '2022-01-01' AND '2022-12-31'
+    AND product_service_table.product_service_type = 'Fixed Income Funds';
+```
+
+### Explanation:
+1. **Master_txn_table**: This table contains all transaction details including the amount.
+2. **product_service_table**: This table contains the product/service types and their descriptions.
+3. **JOIN**: We join the `Master_txn_table` with the `product_service_table` on the `business_id` and `product_service`","SELECT 
+    SUM(amount) AS total_invoice_value
+FROM 
+    Master_txn_table
+JOIN 
+    product_service_table ON Master_txn_table.business_id = product_service_table.business_id AND Master_txn_table.product_service = product_service_table.product_service
+WHERE 
+    Master_txn_table.transaction_date BETWEEN '2022-01-01' AND '2022-12-31'
+    AND product_service_table.product_service_type = 'Fixed Income Funds';"
+Retail,Compare sales by customer Last fiscal year,"select customers, sum(credit) from master_txn_table where account in ('income','other income') and transaction_date between date(current_date, '-3 months', 'start of year','-1 years', '+3 months') and date(current_date, '-3 months', 'start of year','-1 years', '+3 months', '+1 years', '-1 days') group by customers","To compare sales by customer over the last fiscal year in SQLite, we need to follow these steps:
+
+1. Identify the fiscal year range (e.g., from January 1st of the previous year to December 31st of the previous year).
+2. Filter the `Master_txn_table` to include only transactions that fall within this fiscal year.
+3. Sum up the sales amounts for each customer.
+
+Here's a step-by-step SQL query to achieve this:
+
+```sql
+-- Step 1: Determine the fiscal year range
+SELECT 
+    strftime('%Y', 'now') - 1 AS fiscal_year,
+    strftime('%m-%d', 'now') - 90 AS start_date,
+    strftime('%m-%d', 'now') - 365 AS end_date
+FROM 
+    master_txn_table;
+
+-- Step 2: Filter the Master_txn_table for the fiscal year range and sum up sales by customer
+WITH FiscalYearSales AS (
+    SELECT 
+        c.customer_name,
+        SUM(m.amount) AS total_sales
+    FROM 
+        master_txn_table m
+    JOIN 
+        customer_table c ON m.business_id = c.business_id
+    WHERE 
+        m.transaction_date BETWEEN strftime('%m-%d', 'now') - 90 AND strftime('%m-%d', 'now') - 365
+    GROUP BY 
+        c.customer_name
+)
+SELECT 
+    fs.customer_name,
+    fs.total_sales
+FROM 
+","To compare sales by customer over the last fiscal year in SQLite, we need to follow these steps:
+
+1. Identify the fiscal year range (e.g., from January 1st of the previous year to December 31st of the previous year).
+2. Filter the `Master_txn_table` to include only transactions that fall within this fiscal year.
+3. Sum up the sales amounts for each customer.
+
+Here's a step-by-step SQL query to achieve this:
+
+```sql
+-- Step 1: Determine the fiscal year range
+SELECT 
+    strftime('%Y', 'now') - 1 AS fiscal_year,
+    strftime('%m-%d', 'now') - 90 AS start_date,
+    strftime('%m-%d', 'now') - 365 AS end_date
+FROM 
+    master_txn_table;
+
+-- Step 2: Filter the Master_txn_table for the fiscal year range and sum up sales by customer
+WITH FiscalYearSales AS (
+    SELECT 
+        c.customer_name,
+        SUM(m.amount) AS total_sales
+    FROM 
+        master_txn_table m
+    JOIN 
+        customer_table c ON m.business_id = c.business_id
+    WHERE 
+        m.transaction_date BETWEEN strftime('%m-%d', 'now') - 90 AND strftime('%m-%d', 'now') - 365
+    GROUP BY 
+        c.customer_name
+)
+SELECT 
+    fs.customer_name,
+    fs.total_sales
+FROM"
+Retail,Compare sales by customer Last year,"select customers, sum(credit) from master_txn_table where account in ('income','other income') and transaction_date between date(current_date, 'start of year', '-1 days', 'start of year') and date(current_date, 'start of year', '-1 days') group by customers","To compare sales by customer last year in SQLite, you need to filter the records based on the `transaction_date` being within the last year and then group the results by `customer_name`. Here's a step-by-step approach:
+
+1. Identify the current date.
+2. Calculate the date one year ago from the current date.
+3. Filter the `Master_txn_table` records where the `transaction_date` is between the current date and one year ago.
+4. Group the results by `customer_name` and sum the `sale` column.
+
+Here's the SQL query to achieve this:
+
+```sql
+SELECT 
+    customer_name,
+    SUM(sale) AS total_sales
+FROM 
+    Master_txn_table
+WHERE 
+    transaction_date BETWEEN DATE('now', '-1 year') AND DATE('now')
+GROUP BY 
+    customer_name;
+```
+
+### Explanation:
+- `DATE('now', '-1 year')`: This function returns the date one year before today.
+- `transaction_date BETWEEN DATE('now', '-1 year') AND DATE('now')`: Filters the records where the `transaction_date` falls within the last year.
+- `SUM(sale) AS total_sales`: Sums up the `sale` amounts for each customer.
+- `GROUP BY customer_name`: Groups the results by `customer_name`.
+
+This query will give you the total sales for each customer over the last year. If you want to include customers who have no sales during that period, you might need","SELECT 
+    customer_name,
+    SUM(sale) AS total_sales
+FROM 
+    Master_txn_table
+WHERE 
+    transaction_date BETWEEN DATE('now', '-1 year') AND DATE('now')
+GROUP BY 
+    customer_name;"
+Retail,How much revenue came through Phillip Black Last 30 days?,"select sum(credit) from master_txn_table as t1 join chart_of_account_ob as t2 on t1.account = t2.account_name where customers = """"phillip black"""" and account_type in ('income','other income') and transaction_date between date( current_date, ""-30 days"") and date( current_date)","To determine the revenue that came through Phillip Black over the last 30 days, we need to follow these steps:
+
+1. Identify the relevant transactions where the `customer_name` is ""Phillip Black"".
+2. Filter the transactions to those that occurred within the last 30 days.
+3. Sum up the `sale` column, which represents the revenue.
+
+Here's the SQLite query to achieve this:
+
+```sql
+SELECT SUM(sale) AS total_revenue
+FROM Master_txn_table
+WHERE customer_name = 'Phillip Black'
+  AND transaction_date >= DATE('now', '-30 days');
+```
+
+### Explanation:
+- `SELECT SUM(sale) AS total_revenue`: This part of the query sums up all the values in the `sale` column and assigns the result to a new column named `total_revenue`.
+- `FROM Master_txn_table`: This specifies the table from which to retrieve the data.
+- `WHERE customer_name = 'Phillip Black'`: This filters the rows to only include transactions where the `customer_name` is ""Phillip Black"".
+- `AND transaction_date >= DATE('now', '-30 days')`: This further filters the results to include only transactions that occurred within the last 30 days. The `DATE('now', '-30 days')` function returns the date 30 days before today.
+
+This query will give you the total revenue that came through Phillip Black over the last 30 days.","SELECT SUM(sale) AS total_revenue
+FROM Master_txn_table
+WHERE customer_name = 'Phillip Black'
+  AND transaction_date >= DATE('now', '-30 days');"
+Retail,When was the last time we sold Application Hosting,"select transaction_date from master_txn_table as t1 join chart_of_account_ob as t2 on t1.account = t2.account_name where account_type in ('income','other income') and product_service = ""application hosting"" order by transaction_date desc limit 1","To determine when the last time an application hosting service was sold, you can use the `Master_txn_table` table and filter by the specific product service type 'Application Hosting'. Then, you can find the most recent transaction date.
+
+Here's the step-by-step SQLite query to achieve this:
+
+1. Filter the `Master_txn_table` for transactions where the `product_service` is 'Application Hosting'.
+2. Select the maximum `transaction_date` from these filtered transactions.
+
+```sql
+SELECT MAX(transaction_date)
+FROM Master_txn_table
+WHERE product_service = 'Application Hosting';
+```
+
+This query will return the latest date on which an application hosting service was sold. If there are no records for 'Application Hosting', the query will return NULL. If you want to ensure that the result is not NULL, you might want to add a condition to check if any records exist:
+
+```sql
+SELECT MAX(transaction_date)
+FROM Master_txn_table
+WHERE product_service = 'Application Hosting'
+  AND transaction_date IS NOT NULL;
+```
+
+This ensures that the query returns NULL only if there are no records at all for 'Application Hosting'.","SELECT MAX(transaction_date)
+FROM Master_txn_table
+WHERE product_service = 'Application Hosting';"
+Retail,Check the sales receipts record and compute the average quantities ordered with the payment method [payment_method].,"select avg(quantity_per_transaction) from (select transaction_id, sum(quantity) as quantity_per_transaction from master_txn_table where transaction_type = 'sales receipt' and payment_method = ""[payment_method]"" group by transaction_id)","To compute the average quantities ordered for each payment method, we need to join the `Master_txn_table` with the `product_service_table` and filter by the `transaction_type` that corresponds to sales receipts (typically 'SALE' or similar). We will then group by the `payment_method` and calculate the average of the `quantity` column.
+
+Here is the step-by-step SQLite query:
+
+1. Join the `Master_txn_table` with the `product_service_table`.
+2. Filter the records where `transaction_type` is 'SALE'.
+3. Group the results by `payment_method`.
+4. Calculate the average of the `quantity` column.
+
+```sql
+SELECT 
+    pm.payment_method,
+    AVG(pst.quantity) AS average_quantity
+FROM 
+    Master_txn_table mtt
+JOIN 
+    product_service_table pst ON mtt.business_id = pst.business_id AND mtt.product_service = pst.product_service
+WHERE 
+    mtt.transaction_type = 'SALE'
+GROUP BY 
+    pm.payment_method;
+```
+
+Explanation:
+- `Master_txn_table` is joined with `product_service_table` on the `business_id` and `product_service` columns.
+- The `transaction_type` is filtered to be 'SALE'.
+- The result is grouped by `payment_method`.
+- The average of the `quantity` column is calculated using the `AVG()` function.
+
+This query will give you the average quantities ordered for each payment method in the sales receipts records","SELECT 
+    pm.payment_method,
+    AVG(pst.quantity) AS average_quantity
+FROM 
+    Master_txn_table mtt
+JOIN 
+    product_service_table pst ON mtt.business_id = pst.business_id AND mtt.product_service = pst.product_service
+WHERE 
+    mtt.transaction_type = 'SALE'
+GROUP BY 
+    pm.payment_method;"
+Retail,When was the last time we sold Photography,"select transaction_date from master_txn_table as t1 join chart_of_account_ob as t2 on t1.account = t2.account_name where account_type in ('income','other income') and product_service = ""photography"" order by transaction_date desc limit 1","To determine when the last time a Photography product service was sold, you can use the `Master_txn_table` to filter transactions where the `product_service` is 'Photography'. Then, you can find the most recent transaction date by ordering the results by `transaction_date` in descending order and selecting the first row.
+
+Here's the SQLite query to achieve this:
+
+```sql
+SELECT transaction_date
+FROM Master_txn_table
+WHERE product_service = 'Photography'
+ORDER BY transaction_date DESC
+LIMIT 1;
+```
+
+This query will return the latest date on which a Photography product service was sold.","SELECT transaction_date
+FROM Master_txn_table
+WHERE product_service = 'Photography'
+ORDER BY transaction_date DESC
+LIMIT 1;"
+Retail,How much revenue came through John Roberson This quarter?,"select sum(credit) from master_txn_table as t1 join chart_of_account_ob as t2 on t1.account = t2.account_name where customers = """"john roberson"""" and account_type in ('income','other income') and transaction_date >= strftime('%y-%m-%d', strftime('%y', 'now', '-1 year') || '-' || substr('00' || (((strftime('%m', 'now') - 1) / 3) * 3 + 1), -2, 2) || '-01')","To determine the revenue that came through John Roberson this quarter, we need to follow these steps:
+
+1. Identify the transactions where John Roberson is involved as either the customer or the vendor.
+2. Filter the transactions by the current quarter.
+3. Sum up the revenue amounts.
+
+Here's a step-by-step SQLite query to achieve this:
+
+```sql
+-- Step 1: Identify relevant transactions involving John Roberson
+SELECT 
+    m.transaction_id,
+    m.transaction_date,
+    m.customer_name,
+    m.vendor_name,
+    m.product_service,
+    m.quantity,
+    m.rate,
+    m.credit,
+    m.debit,
+    m.sale,
+    m.purchase,
+    m.billable,
+    m.invoiced,
+    m.cleared,
+    m.payment_method,
+    m.misc_(business_specific_fields)
+FROM 
+    Master_txn_table m
+JOIN 
+    customer_table c ON m.customer_name = c.customer_name AND m.business_id = c.business_id
+WHERE 
+    c.customer_name = 'John Roberson' OR 
+    (m.vendor_name IS NOT NULL AND m.vendor_name = 'John Roberson');
+
+-- Step 2: Filter by the current quarter
+WITH CurrentQuarter AS (
+    SELECT 
+        DATE_TRUNC('quarter', CURRENT_DATE) AS quarter_start,
+        DATE_TRUNC('quarter', CURRENT_DATE + INTERVAL '3 months') - INTERVAL '1 day' AS quarter_end
+),
+FilteredTransactions AS (
+    SELECT 
+        *
+    FROM 
+        Current","To determine the revenue that came through John Roberson this quarter, we need to follow these steps:
+
+1. Identify the transactions where John Roberson is involved as either the customer or the vendor.
+2. Filter the transactions by the current quarter.
+3. Sum up the revenue amounts.
+
+Here's a step-by-step SQLite query to achieve this:
+
+```sql
+-- Step 1: Identify relevant transactions involving John Roberson
+SELECT 
+    m.transaction_id,
+    m.transaction_date,
+    m.customer_name,
+    m.vendor_name,
+    m.product_service,
+    m.quantity,
+    m.rate,
+    m.credit,
+    m.debit,
+    m.sale,
+    m.purchase,
+    m.billable,
+    m.invoiced,
+    m.cleared,
+    m.payment_method,
+    m.misc_(business_specific_fields)
+FROM 
+    Master_txn_table m
+JOIN 
+    customer_table c ON m.customer_name = c.customer_name AND m.business_id = c.business_id
+WHERE 
+    c.customer_name = 'John Roberson' OR 
+    (m.vendor_name IS NOT NULL AND m.vendor_name = 'John Roberson');
+
+-- Step 2: Filter by the current quarter
+WITH CurrentQuarter AS (
+    SELECT 
+        DATE_TRUNC('quarter', CURRENT_DATE) AS quarter_start,
+        DATE_TRUNC('quarter', CURRENT_DATE + INTERVAL '3 months') - INTERVAL '1 day' AS quarter_end
+),
+FilteredTransactions AS (
+    SELECT 
+        *
+    FROM 
+        Current"
+Retail,Compare sales by customer Last month,"select customers, sum(credit) from master_txn_table where account in ('income','other income') and transaction_date between date( current_date, ""start of month"", ""-1 months"") and date( current_date, ""start of month"", ""-1 days"") group by customers","To compare the sales by customer last month, we need to extract the sales data from the `Master_txn_table` and filter it based on the transaction date being within the last month. We will also join the necessary tables to get the customer names.
+
+Here's a step-by-step breakdown of the query:
+
+1. **Filter the transactions**: We need to filter the transactions where the `transaction_date` is within the last month.
+2. **Join the necessary tables**: We need to join the `customer_table` to get the customer names.
+3. **Group by customer**: We group the results by customer to aggregate the sales.
+4. **Sum the sales**: We sum up the `sale` column to get the total sales for each customer.
+
+Here is the SQLite query to achieve this:
+
+```sql
+SELECT 
+    ct.customer_name,
+    SUM(mt.sale) AS total_sales
+FROM 
+    Master_txn_table mt
+JOIN 
+    customer_table ct ON mt.business_id = ct.business_id AND mt.customer_name = ct.customer_name
+WHERE 
+    mt.transaction_date >= DATE('now', '-1 month')
+GROUP BY 
+    ct.customer_name;
+```
+
+### Explanation:
+- **Master_txn_table**: This table contains all the transaction details including the `transaction_date`, `sale`, and other relevant fields.
+- **customer_table**: This table contains the customer information, including their names.
+- **JOIN**: We join the `Master_txn_table` with the `customer_table` on","SELECT 
+    ct.customer_name,
+    SUM(mt.sale) AS total_sales
+FROM 
+    Master_txn_table mt
+JOIN 
+    customer_table ct ON mt.business_id = ct.business_id AND mt.customer_name = ct.customer_name
+WHERE 
+    mt.transaction_date >= DATE('now', '-1 month')
+GROUP BY 
+    ct.customer_name;"
+Service,What was the first invoice value for Application service provider services in This week to date?,"select min(credit) from master_txn_table where transaction_type = 'invoice' and instr(account,""application service provider services"") and transaction_date between date( current_date, ""weekday 0"", ""-7 days"") and date( current_date)","To find the first invoice value for Application service provider services in the current week, we need to follow these steps:
+
+1. Identify the relevant tables and columns that contain information about invoices and transactions.
+2. Filter the data to include only Application service provider services.
+3. Determine the current week's start and end dates.
+4. Extract the first invoice value from the filtered data.
+
+Here is the step-by-step SQLite query to achieve this:
+
+```sql
+-- Step 1: Get the current week's start and end dates
+WITH CurrentWeek AS (
+    SELECT 
+        DATE('now', 'start of week') AS start_date,
+        DATE('now', 'start of week', '+6 days') - 1 AS end_date
+)
+-- Step 2: Filter the data to include only Application service provider services
+SELECT 
+    MIN(amount) AS first_invoice_value
+FROM 
+    Master_txn_table
+JOIN 
+    product_service_table ON Master_txn_table.business_id = product_service_table.business_id AND Master_txn_table.product_service = product_service_table.product_service
+WHERE 
+    Master_txn_table.transaction_date BETWEEN (SELECT start_date FROM CurrentWeek) AND (SELECT end_date FROM CurrentWeek)
+    AND product_service_table.product_service_type = 'Application'
+    AND Master_txn_table.transaction_type = 'invoice';
+```
+
+### Explanation:
+1. **CurrentWeek CTE**: This Common Table Expression (CTE) calculates the start and end dates of the current week using `DATE('now","-- Step 1: Get the current week's start and end dates
+WITH CurrentWeek AS (
+    SELECT 
+        DATE('now', 'start of week') AS start_date,
+        DATE('now', 'start of week', '+6 days') - 1 AS end_date
+)
+-- Step 2: Filter the data to include only Application service provider services
+SELECT 
+    MIN(amount) AS first_invoice_value
+FROM 
+    Master_txn_table
+JOIN 
+    product_service_table ON Master_txn_table.business_id = product_service_table.business_id AND Master_txn_table.product_service = product_service_table.product_service
+WHERE 
+    Master_txn_table.transaction_date BETWEEN (SELECT start_date FROM CurrentWeek) AND (SELECT end_date FROM CurrentWeek)
+    AND product_service_table.product_service_type = 'Application'
+    AND Master_txn_table.transaction_type = 'invoice';"
+Service,How many Service Provider did we sell to Robert Townsend in jan this year?,"select sum(quantity) from master_txn_table where customers = ""robert townsend"" and product_service = 'service provider' and transaction_type in ('invoice', 'sales receipt') and transaction_date between date(current_date, 'start of year') and date(current_date, 'start of year', '+1 month', '-1 day')","To determine how many service providers sold services to Robert Townsend in January of the current year, you can follow these steps:
+
+1. Identify the relevant tables and columns that contain the necessary information.
+2. Filter the data to include only transactions from January.
+3. Ensure the customer name is ""Robert Townsend"".
+4. Count the distinct service providers.
+
+Here's the SQLite query to achieve this:
+
+```sql
+SELECT COUNT(DISTINCT product_service)
+FROM Master_txn_table
+WHERE transaction_date BETWEEN '2023-01-01' AND '2023-01-31'
+  AND customer_name = 'Robert Townsend';
+```
+
+### Explanation:
+- `Master_txn_table`: This table contains all the transaction details.
+- `transaction_date BETWEEN '2023-01-01' AND '2023-01-31'`: Filters the transactions to those that occurred in January 2023.
+- `customer_name = 'Robert Townsend'`: Filters the transactions to those where the customer is ""Robert Townsend"".
+- `COUNT(DISTINCT product_service)`: Counts the unique service providers (i.e., the number of different products/services sold).
+
+Make sure to adjust the date range if the current year is not 2023. If the year is dynamic, you might want to use a parameterized query or a variable to store the current year.","SELECT COUNT(DISTINCT product_service)
+FROM Master_txn_table
+WHERE transaction_date BETWEEN '2023-01-01' AND '2023-01-31'
+  AND customer_name = 'Robert Townsend';"
+Service,Number of invoices created for Home-care Service in This year?,"select count(distinct transaction_id) from master_txn_table where transaction_type = 'invoice' and instr(account,""home-care service"") and transaction_date between date(current_date, 'start of year') and date(current_date)","To find the number of invoices created for the ""Home-care Service"" in the current year, we need to follow these steps:
+
+1. Identify the relevant table that contains information about transactions and their types.
+2. Filter the transactions to include only those related to the ""Home-care Service"".
+3. Ensure that the transactions are marked as ""invoiced"".
+4. Determine the current year from the `transaction_date` column.
+5. Count the number of such transactions.
+
+Here is the SQLite query to achieve this:
+
+```sql
+SELECT COUNT(*) AS invoice_count
+FROM Master_txn_table
+WHERE 
+    transaction_type = 'invoice'
+    AND product_service = 'Home-care Service'
+    AND strftime('%Y', transaction_date) = strftime('%Y', 'now');
+```
+
+### Explanation:
+- `Master_txn_table`: This table contains all the transaction details.
+- `transaction_type = 'invoice'`: Filters out only the transactions that are marked as invoices.
+- `product_service = 'Home-care Service'`: Filters the transactions to include only those related to the ""Home-care Service"".
+- `strftime('%Y', transaction_date) = strftime('%Y', 'now')`: Ensures that the transactions are from the current year by comparing the year part of the `transaction_date` with the current year.
+- `COUNT(*) AS invoice_count`: Counts the number of matching records.
+
+This query will give you the total number of invoices created for the ""Home-care Service"" in the current","SELECT COUNT(*) AS invoice_count
+FROM Master_txn_table
+WHERE 
+    transaction_type = 'invoice'
+    AND product_service = 'Home-care Service'
+    AND strftime('%Y', transaction_date) = strftime('%Y', 'now');"
+Service,What was the lowest invoice value for Full-service restaurants in in dec last year?,"select min(credit) from master_txn_table where transaction_type = 'invoice' and instr(account,""full-service restaurants"") and transaction_date between date(current_date, '-1 year', 'start of year', '+11 month') and date(current_date, '-1 year', 'start of year', '+12 month', '-1 day')","To find the lowest invoice value for full-service restaurants in December of the previous year, we need to follow these steps:
+
+1. Identify the relevant tables and columns that contain information about invoices and the type of service provided.
+2. Filter the data to include only full-service restaurants and transactions from December of the previous year.
+3. Extract the invoice values and determine the minimum value.
+
+Here is the SQLite query to achieve this:
+
+```sql
+SELECT MIN(amount) AS min_invoice_value
+FROM Master_txn_table
+JOIN product_service_table ON Master_txn_table.product_service = product_service_table.product_service
+WHERE product_service_table.product_service_type = 'Full-service restaurant'
+  AND strftime('%Y-%m', Master_txn_table.transaction_date) = '2022-12';
+```
+
+### Explanation:
+- **Master_txn_table**: This table contains all transaction details including the amount.
+- **product_service_table**: This table provides the type of service (e.g., ""Full-service restaurant"").
+- **strftime('%Y-%m', Master_txn_table.transaction_date)**: This function extracts the year and month from the `transaction_date` column to filter transactions from December of the previous year (in this case, 2022-12).
+- **MIN(amount)**: This function calculates the minimum value of the `amount` column, which represents the invoice value.
+
+This query will return the lowest invoice value for full-service restaurants in December of the previous year.","SELECT MIN(amount) AS min_invoice_value
+FROM Master_txn_table
+JOIN product_service_table ON Master_txn_table.product_service = product_service_table.product_service
+WHERE product_service_table.product_service_type = 'Full-service restaurant'
+  AND strftime('%Y-%m', Master_txn_table.transaction_date) = '2022-12';"
+Service,What was the mean invoice value for Home-care Service in in q1 this year?,"select avg(credit) from master_txn_table where transaction_type = 'invoice' and instr(account,""home-care service"") and transaction_date between date(current_date, 'start of year') and date(current_date, 'start of year', '+3 month', '-1 day')","To find the mean invoice value for the ""Home-care Service"" in Q1 of the current year, we need to follow these steps:
+
+1. Identify the relevant transactions that pertain to the ""Home-care Service"".
+2. Filter the transactions to those from Q1 of the current year.
+3. Calculate the mean of the invoice values (which is typically the `sale` field in the `Master_txn_table`).
+
+Here's the SQLite query to achieve this:
+
+```sql
+WITH Q1_Transactions AS (
+    SELECT *
+    FROM Master_txn_table
+    WHERE transaction_date BETWEEN DATE('now', '-3 months') AND DATE('now')
+      AND product_service = 'Home-care Service'
+)
+SELECT AVG(sale) AS mean_invoice_value
+FROM Q1_Transactions;
+```
+
+### Explanation:
+- **Q1_Transactions CTE**: This Common Table Expression (CTE) filters the `Master_txn_table` to include only transactions where the `transaction_date` falls within the first quarter of the current year (`DATE('now', '-3 months')` to `DATE('now')`). The `product_service` column is checked to ensure it matches 'Home-care Service'.
+- **AVG(sale)**: The `AVG` function calculates the average of the `sale` field for the filtered transactions.
+
+This query will give you the mean invoice value for the ""Home-care Service"" in Q1 of the current year.","WITH Q1_Transactions AS (
+    SELECT *
+    FROM Master_txn_table
+    WHERE transaction_date BETWEEN DATE('now', '-3 months') AND DATE('now')
+      AND product_service = 'Home-care Service'
+)
+SELECT AVG(sale) AS mean_invoice_value
+FROM Q1_Transactions;"
+Service,Number of invoices created for Full-service restaurants in MTD?,"select count(distinct transaction_id) from master_txn_table where transaction_type = 'invoice' and instr(account,""full-service restaurants"") and transaction_date between date( current_date, ""start of month"") and date( current_date)","To determine the number of invoices created for Full-service restaurants in the current month-to-date (MTD), we need to follow these steps:
+
+1. Identify the relevant tables and columns that contain information about invoices.
+2. Filter the data to include only Full-service restaurants.
+3. Count the number of invoices created within the current MTD.
+
+Here's a step-by-step SQLite query to achieve this:
+
+```sql
+-- Step 1: Identify the relevant tables and columns
+SELECT 
+    COUNT(*) AS invoice_count
+FROM 
+    Master_txn_table
+WHERE 
+    transaction_type = 'Invoice'
+    AND product_service_type = 'Full-service restaurant'
+    AND strftime('%Y-%m', transaction_date) = strftime('%Y-%m', CURRENT_DATE);
+```
+
+### Explanation:
+- `Master_txn_table`: This table contains all transactions, including invoices.
+- `transaction_type = 'Invoice'`: Filters out only the records where the transaction type is an invoice.
+- `product_service_type = 'Full-service restaurant'`: Filters the records to include only those related to Full-service restaurants.
+- `strftime('%Y-%m', transaction_date) = strftime('%Y-%m', CURRENT_DATE)`: Filters the records to include only those created in the current month-to-date. The `CURRENT_DATE` function returns the current date, and `strftime('%Y-%m', ...)` extracts the year and month from the date.
+
+This query will give you the count of invoices created for Full-service restaurants","-- Step 1: Identify the relevant tables and columns
+SELECT 
+    COUNT(*) AS invoice_count
+FROM 
+    Master_txn_table
+WHERE 
+    transaction_type = 'Invoice'
+    AND product_service_type = 'Full-service restaurant'
+    AND strftime('%Y-%m', transaction_date) = strftime('%Y-%m', CURRENT_DATE);"
+Service,How many Service Provisioning did we sell to Leonard Bennett This fiscal year?,"select sum(quantity) from master_txn_table where customers = ""leonard bennett"" and product_service = 'service provisioning' and transaction_type in ('invoice', 'sales receipt') and transaction_date between date(current_date, '-3 months', 'start of year', '+3 months') and date(current_date)","To determine how many service provisions were sold to ""Leonard Bennett"" this fiscal year, you need to follow these steps:
+
+1. Identify the fiscal year from the `transaction_date` in the `Master_txn_table`.
+2. Filter the records where the `customer_name` is ""Leonard Bennett"".
+3. Count the number of unique `product_service` entries.
+
+Here's the SQLite query to achieve this:
+
+```sql
+SELECT COUNT(DISTINCT product_service)
+FROM Master_txn_table
+WHERE customer_name = 'Leonard Bennett'
+  AND strftime('%Y', transaction_date) = strftime('%Y', 'now');
+```
+
+### Explanation:
+- `strftime('%Y', transaction_date)` extracts the year from the `transaction_date`.
+- `strftime('%Y', 'now')` extracts the current year.
+- The `COUNT(DISTINCT product_service)` ensures that each unique service provision is counted only once.
+
+This query will give you the count of distinct service provisions sold to ""Leonard Bennett"" within the current fiscal year.","SELECT COUNT(DISTINCT product_service)
+FROM Master_txn_table
+WHERE customer_name = 'Leonard Bennett'
+  AND strftime('%Y', transaction_date) = strftime('%Y', 'now');"
+Service,How many Service Provisioning did we sell to Amanda Johnson in q1 this year?,"select sum(quantity) from master_txn_table where customers = ""amanda johnson"" and product_service = 'service provisioning' and transaction_type in ('invoice', 'sales receipt') and transaction_date between date(current_date, 'start of year') and date(current_date, 'start of year', '+3 month', '-1 day')","To determine how many service provisions were sold to Amanda Johnson in Q1 of the current year, you need to follow these steps:
+
+1. Identify the relevant tables and columns that contain information about service provisions, customers, and transactions.
+2. Filter the data to include only those transactions where the customer is Amanda Johnson and the transaction type is related to service provision.
+3. Ensure the transaction date falls within the first quarter of the current year.
+
+Here's the step-by-step SQLite query to achieve this:
+
+```sql
+SELECT COUNT(*) AS service_provisions_sold
+FROM Master_txn_table
+JOIN customer_table ON Master_txn_table.customer_name = customer_table.customer_name
+WHERE customer_table.customer_name = 'Amanda Johnson'
+  AND Master_txn_table.transaction_type LIKE '%service%'
+  AND strftime('%Y-%m', Master_txn_table.transaction_date) = strftime('%Y-%m', '2023-01-01')
+```
+
+### Explanation:
+1. **Master_txn_table**: This table contains all transaction details including the customer name (`customer_name`), transaction type (`transaction_type`), and transaction date (`transaction_date`).
+2. **customer_table**: This table contains customer information, including the customer name (`customer_name`).
+3. **JOIN**: We join `Master_txn_table` with `customer_table` on the `customer_name` column to filter by the specific customer.
+4. **WHERE Clause**:
+   - `customer_table.customer_name = 'Amanda Johnson","SELECT COUNT(*) AS service_provisions_sold
+FROM Master_txn_table
+JOIN customer_table ON Master_txn_table.customer_name = customer_table.customer_name
+WHERE customer_table.customer_name = 'Amanda Johnson'
+  AND Master_txn_table.transaction_type LIKE '%service%'
+  AND strftime('%Y-%m', Master_txn_table.transaction_date) = strftime('%Y-%m', '2023-01-01')"
+Service,What was the average invoice value for Application service provider services in This fiscal year to date?,"select avg(credit) from master_txn_table where transaction_type = 'invoice' and instr(account,""application service provider services"") and transaction_date between date(current_date, '-3 months', 'start of year', '+3 months') and date(current_date, '-3 months', 'start of year','+1 year', '+3 months', '-1 day')","To calculate the average invoice value for Application service provider services in the current fiscal year to date, we need to follow these steps:
+
+1. Identify the relevant transactions that involve Application service provider services.
+2. Filter out only those transactions that have been invoiced (i.e., `invoiced` is set to 1).
+3. Calculate the total amount of these invoices.
+4. Determine the number of such invoices.
+5. Compute the average invoice value.
+
+Here's the step-by-step SQLite query to achieve this:
+
+```sql
+WITH FiscalYearToDate AS (
+    SELECT 
+        business_id,
+        SUM(amount) AS total_amount,
+        COUNT(*) AS count_invoices
+    FROM 
+        Master_txn_table
+    WHERE 
+        transaction_date >= DATE('now', '-1 year') AND
+        transaction_date < DATE('now')
+        AND product_service = 'Application service provider'
+        AND invoiced = 1
+    GROUP BY 
+        business_id
+)
+SELECT 
+    AVG(total_amount) AS average_invoice_value
+FROM 
+    FiscalYearToDate;
+```
+
+### Explanation:
+- **FiscalYearToDate CTE**: This Common Table Expression (CTE) calculates the total amount and the count of invoices for each business ID within the fiscal year to date (`transaction_date` between the start of the current fiscal year and today). It filters for transactions where `product_service` is 'Application service provider' and `invoiced` is 1.
+  
+- **","WITH FiscalYearToDate AS (
+    SELECT 
+        business_id,
+        SUM(amount) AS total_amount,
+        COUNT(*) AS count_invoices
+    FROM 
+        Master_txn_table
+    WHERE 
+        transaction_date >= DATE('now', '-1 year') AND
+        transaction_date < DATE('now')
+        AND product_service = 'Application service provider'
+        AND invoiced = 1
+    GROUP BY 
+        business_id
+)
+SELECT 
+    AVG(total_amount) AS average_invoice_value
+FROM 
+    FiscalYearToDate;"
+Service,How much did Andrew Parker spend on Full-service restaurants in July during last year?,"select sum(debit) from master_txn_table as t1 join chart_of_account_ob as t2 on t1.account = t2.account_name where t1.customers = ""andrew parker"" and instr(account,""full-service restaurants"") and strftime(""%m"", transaction_date) = '07' and strftime(""%y"", transaction_date) = strftime('%y', current_date) - 1 and account_type in ('expense','other expense')","To determine how much Andrew Parker spent on full-service restaurants in July during the previous year, we need to follow these steps:
+
+1. Identify the relevant tables and columns that contain the necessary information.
+2. Filter the data based on the conditions (business ID, transaction type, date range, and customer name).
+3. Sum up the amounts where the transaction type is related to spending.
+
+Here's the step-by-step SQLite query to achieve this:
+
+```sql
+SELECT 
+    SUM(amount) AS total_spent
+FROM 
+    Master_txn_table
+WHERE 
+    business_id = (SELECT business_id FROM employee_table WHERE employee_name = 'Andrew Parker')
+    AND transaction_type IN ('Purchase', 'Billable')
+    AND transaction_date BETWEEN DATE('now', '-1 year') AND DATE('now', '-1 year', 'month 7')
+    AND product_service = 'Full-service restaurant';
+```
+
+### Explanation:
+- **Master_txn_table**: This table contains all transactions and their details.
+- **employee_table**: We use this table to get the business ID associated with the employee ""Andrew Parker"".
+- **transaction_type IN ('Purchase', 'Billable')**: We filter transactions that are either purchases or billable, as these typically represent spending.
+- **transaction_date BETWEEN DATE('now', '-1 year') AND DATE('now', '-1 year', 'month 7')**: We filter the transactions to be from the month of July in the previous year.
+- **product_service","SELECT 
+    SUM(amount) AS total_spent
+FROM 
+    Master_txn_table
+WHERE 
+    business_id = (SELECT business_id FROM employee_table WHERE employee_name = 'Andrew Parker')
+    AND transaction_type IN ('Purchase', 'Billable')
+    AND transaction_date BETWEEN DATE('now', '-1 year') AND DATE('now', '-1 year', 'month 7')
+    AND product_service = 'Full-service restaurant';"
+Service,What was the min invoice value for Legal & Professional Fees in in jan this year?,"select min(credit) from master_txn_table where transaction_type = 'invoice' and instr(account,""legal & professional fees"") and transaction_date between date(current_date, 'start of year') and date(current_date, 'start of year', '+1 month', '-1 day')","To find the minimum invoice value for ""Legal & Professional Fees"" in January of the current year, we need to follow these steps:
+
+1. Identify the relevant tables and columns that contain the necessary information.
+2. Filter the data to include only transactions from January of the current year.
+3. Filter the data to include only transactions with the ""Legal & Professional Fees"" product service type.
+4. Calculate the minimum invoice value.
+
+Here is the SQLite query to achieve this:
+
+```sql
+SELECT MIN(amount) AS min_invoice_value
+FROM Master_txn_table
+WHERE transaction_date >= DATE('now', '-1 month') AND 
+      transaction_date < DATE('now') AND 
+      product_service = 'Legal & Professional Fees' AND 
+      strftime('%Y-%m', transaction_date) = '2023-01';
+```
+
+### Explanation:
+- `DATE('now', '-1 month')` and `DATE('now')`: These functions get the current date and subtract one month from it to get the start and end dates for January of the current year.
+- `strftime('%Y-%m', transaction_date) = '2023-01'`: This ensures that the transactions are from January 2023.
+- `product_service = 'Legal & Professional Fees'`: This filters the transactions to only those with the ""Legal & Professional Fees"" product service type.
+- `MIN(amount) AS min_invoice_value`: This calculates the minimum value of","SELECT MIN(amount) AS min_invoice_value
+FROM Master_txn_table
+WHERE transaction_date >= DATE('now', '-1 month') AND 
+      transaction_date < DATE('now') AND 
+      product_service = 'Legal & Professional Fees' AND 
+      strftime('%Y-%m', transaction_date) = '2023-01';"
+Service,Number of invoices created for Legal & Professional Fees in Last year?,"select count(distinct transaction_id) from master_txn_table where transaction_type = 'invoice' and instr(account,""legal & professional fees"") and transaction_date between date(current_date, 'start of year', '-1 days', 'start of year') and date(current_date, 'start of year', '-1 days')","To determine the number of invoices created for ""Legal & Professional Fees"" in the last year using SQLite, we need to follow these steps:
+
+1. Identify the relevant table and columns that contain information about transactions.
+2. Filter the transactions to include only those with the ""Legal & Professional Fees"" product service type.
+3. Ensure the transactions were created within the last year.
+4. Count the number of such transactions.
+
+Here is the SQL query to achieve this:
+
+```sql
+SELECT COUNT(*) AS invoice_count
+FROM Master_txn_table
+WHERE business_id = (SELECT business_id FROM product_service_table WHERE product_service = 'Legal & Professional Fees')
+  AND transaction_date >= DATE('now', '-1 year');
+```
+
+### Explanation:
+- `Master_txn_table`: This table contains all transaction records.
+- `product_service_table`: This table contains the product/service types and their names.
+- `DATE('now', '-1 year')`: This function returns the date one year ago from today.
+- The `WHERE` clause filters the transactions based on the product service type being ""Legal & Professional Fees"" and ensuring the transaction was created within the last year.
+
+This query will return the count of invoices created for ""Legal & Professional Fees"" in the last year.","SELECT COUNT(*) AS invoice_count
+FROM Master_txn_table
+WHERE business_id = (SELECT business_id FROM product_service_table WHERE product_service = 'Legal & Professional Fees')
+  AND transaction_date >= DATE('now', '-1 year');"
+Service,What was the last invoice value for Application service provisioning in yesterday?,"select max(credit) from master_txn_table where transaction_type = 'invoice' and instr(account,""application service provisioning"") and transaction_date between date( current_date, ""-1 day"") and date( current_date, ""-1 day"")","To find the last invoice value for ""Application service provisioning"" in the past 24 hours using SQLite, we need to follow these steps:
+
+1. Identify the relevant tables and columns that contain the necessary information.
+2. Filter the data to include only the ""Application service provisioning"" transactions.
+3. Ensure the transactions are from the past 24 hours.
+4. Retrieve the most recent (last) invoice value.
+
+Here is the step-by-step SQL query to achieve this:
+
+```sql
+SELECT 
+    MAX(amount) AS last_invoice_value
+FROM 
+    Master_txn_table
+WHERE 
+    business_id = (SELECT business_id FROM product_service_table WHERE product_service = 'Application service provisioning')
+    AND transaction_date >= DATE('now', '-1 day')
+ORDER BY 
+    transaction_date DESC
+LIMIT 1;
+```
+
+### Explanation:
+- **Master_txn_table**: This table contains all the transaction details including the amount.
+- **product_service_table**: We use this table to filter transactions by the specific product/service type (""Application service provisioning"").
+- **business_id**: We match the `business_id` from both tables to ensure consistency.
+- **transaction_date**: We filter transactions that occurred within the last 24 hours using `DATE('now', '-1 day')`.
+- **MAX(amount)**: We select the maximum (last) invoice value since we want the most recent invoice.
+- **ORDER BY transaction_date DESC**: We order the results by the transaction date in descending","SELECT 
+    MAX(amount) AS last_invoice_value
+FROM 
+    Master_txn_table
+WHERE 
+    business_id = (SELECT business_id FROM product_service_table WHERE product_service = 'Application service provisioning')
+    AND transaction_date >= DATE('now', '-1 day')
+ORDER BY 
+    transaction_date DESC
+LIMIT 1;"
+Service,Number of invoices created for Full-service restaurants in This quarter to date?,"select count(distinct transaction_id) from master_txn_table where transaction_type = 'invoice' and instr(account,""full-service restaurants"") and transaction_date >= strftime('%y-%m-%d', strftime('%y', 'now', '-1 year') || '-' || substr('00' || (((strftime('%m', 'now') - 1) / 3) * 3 + 1), -2, 2) || '-01')","To determine the number of invoices created for full-service restaurants in the current quarter to date, we need to follow these steps:
+
+1. Identify the relevant tables and columns that contain information about invoices.
+2. Filter the data to include only full-service restaurants.
+3. Determine the current quarter and calculate the number of invoices created within that period.
+
+Here's a step-by-step approach using SQLite:
+
+### Step 1: Identify Relevant Tables and Columns
+- `Master_txn_table`: Contains transaction details including `transaction_type`, `customer_name`, `product_service`, and `quantity`.
+- `product_service_table`: Contains the type of products/services (`product_service_type`).
+
+### Step 2: Filter Data for Full-Service Restaurants
+- We need to filter the `product_service_table` to get the list of full-service restaurants.
+
+### Step 3: Determine Current Quarter and Calculate Invoices Created
+- The current quarter can be determined by the `transaction_date`.
+- We need to count the number of invoices created within the current quarter.
+
+Here is the SQLite query to achieve this:
+
+```sql
+WITH FullServiceRestaurants AS (
+    SELECT DISTINCT t.product_service
+    FROM product_service_table t
+    WHERE t.product_service_type = 'Full-Service Restaurant'
+),
+InvoicesForQuarter AS (
+    SELECT 
+        COUNT(*) AS invoice_count
+    FROM 
+        Master_txn_table m
+    JOIN 
+        FullServiceRestaurants fs ON m.product_service = fs.product_service
+    WHERE","To determine the number of invoices created for full-service restaurants in the current quarter to date, we need to follow these steps:
+
+1. Identify the relevant tables and columns that contain information about invoices.
+2. Filter the data to include only full-service restaurants.
+3. Determine the current quarter and calculate the number of invoices created within that period.
+
+Here's a step-by-step approach using SQLite:
+
+### Step 1: Identify Relevant Tables and Columns
+- `Master_txn_table`: Contains transaction details including `transaction_type`, `customer_name`, `product_service`, and `quantity`.
+- `product_service_table`: Contains the type of products/services (`product_service_type`).
+
+### Step 2: Filter Data for Full-Service Restaurants
+- We need to filter the `product_service_table` to get the list of full-service restaurants.
+
+### Step 3: Determine Current Quarter and Calculate Invoices Created
+- The current quarter can be determined by the `transaction_date`.
+- We need to count the number of invoices created within the current quarter.
+
+Here is the SQLite query to achieve this:
+
+```sql
+WITH FullServiceRestaurants AS (
+    SELECT DISTINCT t.product_service
+    FROM product_service_table t
+    WHERE t.product_service_type = 'Full-Service Restaurant'
+),
+InvoicesForQuarter AS (
+    SELECT 
+        COUNT(*) AS invoice_count
+    FROM 
+        Master_txn_table m
+    JOIN 
+        FullServiceRestaurants fs ON m.product_service = fs.product_service
+    WHERE"
+Service,How much did Natasha Chung spend on Home-care Service in July during last year?,"select sum(debit) from master_txn_table as t1 join chart_of_account_ob as t2 on t1.account = t2.account_name where t1.customers = ""natasha chung"" and instr(account,""home-care service"") and strftime(""%m"", transaction_date) = '07' and strftime(""%y"", transaction_date) = strftime('%y', current_date) - 1 and account_type in ('expense','other expense')","To determine how much Natasha Chung spent on the Home-care Service in July during the previous year, we need to follow these steps:
+
+1. Identify the relevant tables and columns that contain the necessary information.
+2. Filter the data based on the specific criteria (Natasha Chung, Home-care Service, July of the previous year).
+3. Sum up the total amount spent.
+
+Here is the step-by-step SQLite query to achieve this:
+
+```sql
+SELECT 
+    SUM(amount) AS total_spent
+FROM 
+    Master_txn_table
+WHERE 
+    business_id = (SELECT business_id FROM employee_table WHERE employee_name = 'Natasha Chung')
+    AND product_service = 'Home-care Service'
+    AND transaction_date BETWEEN DATE('now', '-1 year') AND DATE('now', '-1 year', 'month 7')
+    AND transaction_type IN ('sale', 'purchase');
+```
+
+### Explanation:
+- **Master_txn_table**: This table contains all the transaction details.
+- **business_id**: We need to match the `business_id` with Natasha Chung's `business_id` from the `employee_table`.
+- **product_service**: We filter by the `product_service` column to ensure it matches 'Home-care Service'.
+- **transaction_date**: We use the `DATE` function to get the date range for July of the previous year. The `DATE('now', '-1 year')` gives us the start of the previous year, and `DATE('now', '-1 year","SELECT 
+    SUM(amount) AS total_spent
+FROM 
+    Master_txn_table
+WHERE 
+    business_id = (SELECT business_id FROM employee_table WHERE employee_name = 'Natasha Chung')
+    AND product_service = 'Home-care Service'
+    AND transaction_date BETWEEN DATE('now', '-1 year') AND DATE('now', '-1 year', 'month 7')
+    AND transaction_type IN ('sale', 'purchase');"

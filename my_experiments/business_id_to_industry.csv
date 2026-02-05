@@ -1,0 +1,28 @@
+business_id,industry,confidence
+2,Accommodation and Food Services,1.0
+3,"Administration, Business Support and Waste Management Services",0.96
+4,"Agriculture, Forestry, Fishing and Hunting",0.92
+5,"Arts, Entertainment and Recreation",0.88
+6,Construction,1.0
+7,Educational Services,0.96
+8,Finance and Insurance,1.0
+9,Healthcare and Social Assistance,1.0
+10,Information,1.0
+11,Manufacturing,1.0
+12,Mining,1.0
+13,Other Services,0.96
+14,"Professional, Scientific and Technical Services",1.0
+15,Real Estate and Rental and Leasing,0.96
+16,Retail Trade,1.0
+17,Transportation and Warehousing,0.96
+18,Utilities,1.0
+19,Wholesale Trade,0.96
+20,Advisory and Financial Services,1.0
+21,Business Franchises,1.0
+22,Consumer Goods and Services,1.0
+23,"Industrial Machinery, Gas and Chemicals",1.0
+24,Life Sciences,0.96
+25,Online Retail,1.0
+26,Retail Market Reports,1.0
+27,"Specialist Engineering, Infrastructure and Contractors",1.0
+28,Technology,1.0

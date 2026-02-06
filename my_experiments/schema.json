@@ -1,0 +1,301 @@
+{
+  "database": "BookSQL",
+  "description": "Data-driven canonical schema inferred from original mixed CSVs. Used identically for mixed and stratified experiments.",
+  "tables": [
+    {
+      "name": "chart_of_account_OB",
+      "description": "Auto-inferred schema for chart_of_account_OB",
+      "columns": [
+        {
+          "name": "Business Id",
+          "type": "integer"
+        },
+        {
+          "name": "Account name",
+          "type": "string"
+        },
+        {
+          "name": "Account Full Name",
+          "type": "string"
+        },
+        {
+          "name": "Account type",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "master_txn_table",
+      "description": "Auto-inferred schema for master_txn_table",
+      "columns": [
+        {
+          "name": "business Id",
+          "type": "integer"
+        },
+        {
+          "name": "Transaction ID",
+          "type": "integer"
+        },
+        {
+          "name": "Transaction date",
+          "type": "string"
+        },
+        {
+          "name": "Transaction type",
+          "type": "string"
+        },
+        {
+          "name": "Amount",
+          "type": "number"
+        },
+        {
+          "name": "Created date",
+          "type": "string"
+        },
+        {
+          "name": "Created user",
+          "type": "string"
+        },
+        {
+          "name": "Account",
+          "type": "string"
+        },
+        {
+          "name": "A/R paid",
+          "type": "string"
+        },
+        {
+          "name": "A/P paid",
+          "type": "string"
+        },
+        {
+          "name": "Due date",
+          "type": "string"
+        },
+        {
+          "name": "Open balance",
+          "type": "number"
+        },
+        {
+          "name": "PO status",
+          "type": "string"
+        },
+        {
+          "name": "Estimate status",
+          "type": "string"
+        },
+        {
+          "name": "Customer name",
+          "type": "string"
+        },
+        {
+          "name": "Vendor name",
+          "type": "string"
+        },
+        {
+          "name": "Product_Service",
+          "type": "string"
+        },
+        {
+          "name": "Quantity",
+          "type": "string"
+        },
+        {
+          "name": "Rate",
+          "type": "string"
+        },
+        {
+          "name": "Credit",
+          "type": "string"
+        },
+        {
+          "name": "Debit",
+          "type": "string"
+        },
+        {
+          "name": "Sale",
+          "type": "string"
+        },
+        {
+          "name": "Purchase",
+          "type": "string"
+        },
+        {
+          "name": "Billable",
+          "type": "string"
+        },
+        {
+          "name": "Invoiced",
+          "type": "string"
+        },
+        {
+          "name": "Cleared",
+          "type": "string"
+        },
+        {
+          "name": "payment method",
+          "type": "string"
+        },
+        {
+          "name": "Misc (Business specific fields)",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "customer_table",
+      "description": "Auto-inferred schema for customer_table",
+      "columns": [
+        {
+          "name": "Business Id",
+          "type": "integer"
+        },
+        {
+          "name": "Customer name",
+          "type": "string"
+        },
+        {
+          "name": "Customer full name",
+          "type": "string"
+        },
+        {
+          "name": "Billing address",
+          "type": "string"
+        },
+        {
+          "name": "Billing city",
+          "type": "string"
+        },
+        {
+          "name": "Billing state",
+          "type": "string"
+        },
+        {
+          "name": "Billing ZIP code",
+          "type": "integer"
+        },
+        {
+          "name": "Shipping address",
+          "type": "string"
+        },
+        {
+          "name": "Shipping city",
+          "type": "string"
+        },
+        {
+          "name": "Shipping state",
+          "type": "string"
+        },
+        {
+          "name": "Shipping ZIP code",
+          "type": "integer"
+        },
+        {
+          "name": "Balance",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "vendor_table",
+      "description": "Auto-inferred schema for vendor_table",
+      "columns": [
+        {
+          "name": "Business Id",
+          "type": "integer"
+        },
+        {
+          "name": "Vendor name",
+          "type": "string"
+        },
+        {
+          "name": "Billing address",
+          "type": "string"
+        },
+        {
+          "name": "Billing city",
+          "type": "string"
+        },
+        {
+          "name": "Billing state",
+          "type": "string"
+        },
+        {
+          "name": "Billing ZIP code",
+          "type": "integer"
+        },
+        {
+          "name": "Balance",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "employee_table",
+      "description": "Auto-inferred schema for employee_table",
+      "columns": [
+        {
+          "name": "Business Id",
+          "type": "integer"
+        },
+        {
+          "name": "Employee name",
+          "type": "string"
+        },
+        {
+          "name": "Employee ID",
+          "type": "string"
+        },
+        {
+          "name": "Hire date",
+          "type": "string"
+        },
+        {
+          "name": "Billing rate",
+          "type": "string"
+        },
+        {
+          "name": "Deleted",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "payment_method",
+      "description": "Auto-inferred schema for payment_method",
+      "columns": [
+        {
+          "name": "Business Id",
+          "type": "integer"
+        },
+        {
+          "name": "Payment method",
+          "type": "string"
+        },
+        {
+          "name": "Credit card",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "product_service_table",
+      "description": "Auto-inferred schema for product_service_table",
+      "columns": [
+        {
+          "name": "Business Id",
+          "type": "integer"
+        },
+        {
+          "name": "Product_Service",
+          "type": "string"
+        },
+        {
+          "name": "Product_Service_Type",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "relationships": []
+}
